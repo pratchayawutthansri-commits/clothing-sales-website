@@ -2,9 +2,6 @@
 
 **Xivex** is a modern, responsive e-commerce web application built with PHP and MySQL. It features a hybrid "Gen Z Luxury" aesthetic, real-time live chat for customer support, and a comprehensive admin dashboard.
 
-![Xivex Banner](images/hero_cartoon.png)
-*(Note: Replace with actual screenshot path if available)*
-
 ## 🚀 Features
 
 *   **Front-End**:
