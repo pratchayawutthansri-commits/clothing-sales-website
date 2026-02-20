@@ -26,6 +26,13 @@ if ($action === 'add') {
     if ($quantity < 1) $quantity = 1;
 
     if ($product_id > 0 && $variant_id > 0) {
+        // Verify variant belongs to this product
+        $stmtCheck = $pdo->prepare("SELECT id FROM product_variants WHERE id = ? AND product_id = ?");
+        $stmtCheck->execute([$variant_id, $product_id]);
+        if (!$stmtCheck->fetch()) {
+            redirect('shop.php'); // Invalid variant-product pair
+        }
+
         $cartKey = $product_id . '_' . $variant_id; // Key: ProductID_VariantID
 
         if (isset($_SESSION['cart'][$cartKey])) {

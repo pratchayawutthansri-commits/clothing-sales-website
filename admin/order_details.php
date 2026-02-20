@@ -5,20 +5,41 @@ require_once '../includes/db.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// Fetch Order FIRST (needed by POST handler for email)
+$stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ?");
+$stmt->execute([$id]);
+$order = $stmt->fetch();
+
+if (!$order) {
+    die("ไม่พบคำสั่งซื้อ");
+}
+
+// Fetch Items
+$stmtItems = $pdo->prepare("SELECT * FROM order_items WHERE order_id = ?");
+$stmtItems->execute([$id]);
+$items = $stmtItems->fetchAll();
+
 // Handle Status/Tracking Update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
     
-    // CSRF Check (Basic implementation as session token exists)
-    // if (!hash_equals($_SESSION['admin_csrf_token'], $_POST['csrf_token'])) die("CSRF Error");
+    // CSRF Check
+    if (!isset($_POST['csrf_token']) || !isset($_SESSION['admin_csrf_token']) || !hash_equals($_SESSION['admin_csrf_token'], $_POST['csrf_token'])) {
+        die("Security Error: Invalid CSRF Token");
+    }
 
+    $allowedStatuses = ['pending', 'paid', 'shipped', 'completed', 'cancelled'];
     $newStatus = $_POST['status'];
-    $tracking = $_POST['tracking_number'];
+    $tracking = trim($_POST['tracking_number'] ?? '');
+
+    if (!in_array($newStatus, $allowedStatuses)) {
+        die("Invalid status value");
+    }
     
     $stmtUpdate = $pdo->prepare("UPDATE orders SET status = ?, tracking_number = ? WHERE id = ?");
     $stmtUpdate->execute([$newStatus, $tracking, $id]);
     
     // Send Email Notification
-    $to = $order['email']; // Ensure $order is fetched before this block or move fetch up
+    $to = $order['email'];
     $subject = "Update on Order #" . str_pad($id, 6, '0', STR_PAD_LEFT);
     $message = "Your order status is now: " . ucfirst($newStatus);
     if ($tracking) {
@@ -33,20 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
     header("Location: order_details.php?id=" . $id . "&mail_sent=1");
     exit;
 }
-
-// Fetch Order
-$stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ?");
-$stmt->execute([$id]);
-$order = $stmt->fetch();
-
-if (!$order) {
-    die("ไม่พบคำสั่งซื้อ");
-}
-
-// Fetch Items
-$stmtItems = $pdo->prepare("SELECT * FROM order_items WHERE order_id = ?");
-$stmtItems->execute([$id]);
-$items = $stmtItems->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -133,14 +140,7 @@ $items = $stmtItems->fetchAll();
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>Xivex Admin</h2>
-    <a href="index.php">ภาพรวม (Dashboard)</a>
-    <a href="products.php">จัดการสินค้า (Products)</a>
-    <a href="orders.php">คำสั่งซื้อ (Orders)</a>
-    <a href="settings.php">ตั้งค่า (Settings)</a>
-    <a href="logout.php" style="margin-top: auto; color: #ff6b6b; border:none;">ออกจากระบบ</a>
-</div>
+<?php include 'includes/sidebar.php'; ?>
 
 <div class="content">
     <a href="orders.php" class="btn-back">← กลับไปหน้ารายการ</a>
@@ -230,7 +230,7 @@ $items = $stmtItems->fetchAll();
                 <?php foreach ($items as $item): ?>
                 <tr>
                     <td><?= htmlspecialchars($item['product_name']) ?></td>
-                    <td><?= $item['size'] ?></td>
+                    <td><?= htmlspecialchars($item['size']) ?></td>
                     <td>฿<?= number_format($item['price'], 0) ?></td>
                     <td><?= $item['quantity'] ?></td>
                     <td>฿<?= number_format($item['subtotal'], 0) ?></td>

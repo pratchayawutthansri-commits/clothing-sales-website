@@ -54,10 +54,7 @@ $variants = $stmtV->fetchAll();
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>Xivex Admin</h2>
-    <a href="products.php">← กลับไปหน้ารายการ</a>
-</div>
+<?php include 'includes/sidebar.php'; ?>
 
 <div class="content">
     <h1>แก้ไขสินค้า: <?= htmlspecialchars($product['name']) ?></h1>

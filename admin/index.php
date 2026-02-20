@@ -27,19 +27,31 @@ $stmtMonthly = $pdo->prepare("SELECT SUM(total_price) FROM orders WHERE status I
 $stmtMonthly->execute([$currentMonth]);
 $monthlySales = $stmtMonthly->fetchColumn() ?: 0;
 
-// 5. Chart Data (Last 6 Months)
+// 5. Chart Data (Last 6 Months) - Single query
 $months = [];
 $sales = [];
+$startMonth = date('Y-m', strtotime("-5 months"));
+
+$stmtChart = $pdo->prepare("
+    SELECT DATE_FORMAT(order_date, '%Y-%m') AS month, SUM(total_price) AS total
+    FROM orders
+    WHERE status IN ('paid', 'shipped', 'completed')
+      AND DATE_FORMAT(order_date, '%Y-%m') >= ?
+    GROUP BY month
+    ORDER BY month ASC
+");
+$stmtChart->execute([$startMonth]);
+$chartData = [];
+while ($row = $stmtChart->fetch()) {
+    $chartData[$row['month']] = (float)$row['total'];
+}
+
+// Fill in all 6 months (including months with zero sales)
 for ($i = 5; $i >= 0; $i--) {
     $m = date('Y-m', strtotime("-$i months"));
     $label = date('M Y', strtotime("-$i months"));
-    
-    $stmtChart = $pdo->prepare("SELECT SUM(total_price) FROM orders WHERE status IN ('paid', 'shipped', 'completed') AND DATE_FORMAT(order_date, '%Y-%m') = ?");
-    $stmtChart->execute([$m]);
-    $total = $stmtChart->fetchColumn() ?: 0;
-    
     $months[] = $label;
-    $sales[] = $total;
+    $sales[] = $chartData[$m] ?? 0;
 }
 
 ?>

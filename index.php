@@ -2,8 +2,8 @@
 require_once 'includes/init.php';
 include 'includes/header.php';
 
-// Fetch featured products (random 4)
-$stmt = $pdo->query("SELECT * FROM products ORDER BY RAND() LIMIT 4");
+// Fetch featured products (newest 4 visible products)
+$stmt = $pdo->query("SELECT * FROM products WHERE is_visible = 1 ORDER BY created_at DESC LIMIT 4");
 $featured_products = $stmt->fetchAll();
 ?>
 

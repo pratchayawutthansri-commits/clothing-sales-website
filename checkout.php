@@ -10,30 +10,48 @@ if (empty($_SESSION['cart'])) {
 $total = 0;
 $cartItems = [];
 
+// Parse cart keys
+$cartParsed = [];
 foreach ($_SESSION['cart'] as $key => $quantity) {
     $parts = explode('_', $key);
-    $productId = $parts[0];
-    $variantId = isset($parts[1]) ? $parts[1] : 0;
-    
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-    $stmt->execute([$productId]);
-    $product = $stmt->fetch();
+    $productId = (int)$parts[0];
+    $variantId = isset($parts[1]) ? (int)$parts[1] : 0;
+    if ($productId > 0 && $variantId > 0) {
+        $cartParsed[$key] = ['pid' => $productId, 'vid' => $variantId, 'qty' => $quantity];
+    }
+}
 
-    $stmtv = $pdo->prepare("SELECT * FROM product_variants WHERE id = ?");
-    $stmtv->execute([$variantId]);
-    $variant = $stmtv->fetch();
+if (!empty($cartParsed)) {
+    $variantIds = array_column($cartParsed, 'vid');
+    $placeholders = implode(',', array_fill(0, count($variantIds), '?'));
     
-    if ($product && $variant) {
-        $price = $variant['price'];
-        $subtotal = $price * $quantity;
-        $total += $subtotal;
-        $cartItems[] = [
-            'name' => $product['name'],
-            'size' => $variant['size'],
-            'price' => $price,
-            'qty' => $quantity,
-            'subtotal' => $subtotal
-        ];
+    $stmt = $pdo->prepare("
+        SELECT p.name, v.id AS variant_id, v.size, v.price
+        FROM products p
+        JOIN product_variants v ON v.product_id = p.id
+        WHERE v.id IN ($placeholders)
+    ");
+    $stmt->execute($variantIds);
+    $results = $stmt->fetchAll();
+    
+    $resultMap = [];
+    foreach ($results as $row) {
+        $resultMap[$row['variant_id']] = $row;
+    }
+    
+    foreach ($cartParsed as $key => $cartData) {
+        if (isset($resultMap[$cartData['vid']])) {
+            $row = $resultMap[$cartData['vid']];
+            $subtotal = $row['price'] * $cartData['qty'];
+            $total += $subtotal;
+            $cartItems[] = [
+                'name' => $row['name'],
+                'size' => $row['size'],
+                'price' => $row['price'],
+                'qty' => $cartData['qty'],
+                'subtotal' => $subtotal
+            ];
+        }
     }
 }
 
@@ -81,7 +99,6 @@ include 'includes/header.php';
                 </div>
                 
                 <h3 style="margin: 30px 0 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">วิธีการชำระเงิน</h3>
-                <h3 style="margin: 30px 0 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">วิธีการชำระเงิน</h3>
                 <div class="payment-methods">
                     <label style="display:block; margin-bottom:15px; cursor:pointer;">
                         <input type="radio" name="payment_method" value="BANK_TRANSFER" checked> 
@@ -104,18 +121,6 @@ include 'includes/header.php';
                 <button type="submit" class="btn" style="width:100%; margin-top: 20px; font-size: 1.1rem; padding: 18px;">ยืนยันคำสั่งซื้อ</button>
             </form>
 
-            <script>
-            function toggleSlip(radio) {
-                const slip = document.getElementById('slip-upload');
-                if (radio.value === 'BANK_TRANSFER') {
-                    slip.style.display = 'block';
-                    slip.querySelector('input').required = true;
-                } else {
-                    slip.style.display = 'none';
-                    slip.querySelector('input').required = false;
-                }
-            }
-            </script>
         </div>
 
         <!-- Order Summary -->
@@ -125,7 +130,7 @@ include 'includes/header.php';
             <div class="summary-items" style="margin-bottom: 20px;">
                 <?php foreach ($cartItems as $item): ?>
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem;">
-                    <span><?= htmlspecialchars($item['name']) ?> (<?= $item['size'] ?>) x <?= $item['qty'] ?></span>
+                    <span><?= htmlspecialchars($item['name']) ?> (<?= htmlspecialchars($item['size']) ?>) x <?= $item['qty'] ?></span>
                     <span><?= formatPrice($item['subtotal']) ?></span>
                 </div>
                 <?php endforeach; ?>

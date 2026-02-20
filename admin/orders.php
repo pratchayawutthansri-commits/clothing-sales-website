@@ -91,14 +91,7 @@ $toShipCount = $stmtToShip->fetchColumn();
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>Xivex Admin</h2>
-    <a href="index.php">ภาพรวม (Dashboard)</a>
-    <a href="products.php">จัดการสินค้า (Products)</a>
-    <a href="orders.php" class="active">คำสั่งซื้อ (Orders)</a>
-    <a href="settings.php">ตั้งค่า (Settings)</a>
-    <a href="logout.php" style="margin-top: auto; color: #ff6b6b; border:none;">ออกจากระบบ</a>
-</div>
+<?php include 'includes/sidebar.php'; ?>
 
 <div class="content">
     <div class="header">
@@ -138,6 +131,7 @@ $toShipCount = $stmtToShip->fetchColumn();
                 <th>วันที่</th>
                 <th>ลูกค้า</th>
                 <th>ยอดรวม</th>
+                <th>วิธีชำระ</th>
                 <th>สถานะ</th>
                 <th>จัดการ</th>
             </tr>
@@ -153,10 +147,10 @@ $toShipCount = $stmtToShip->fetchColumn();
                         <span style="font-size:0.8rem; color:#888;"><?= htmlspecialchars($order['phone']) ?></span>
                     </td>
                     <td>฿<?= number_format($order['total_price'], 0) ?></td>
-                    <td><?= strtoupper($order['payment_method']) ?></td>
+                    <td><?= htmlspecialchars(strtoupper($order['payment_method'])) ?></td>
                     <td>
-                        <span class="badge status-<?= $order['status'] ?>">
-                            <?= ucfirst($order['status']) ?>
+                        <span class="badge status-<?= htmlspecialchars($order['status']) ?>">
+                            <?= ucfirst(htmlspecialchars($order['status'])) ?>
                         </span>
                     </td>
                     <td>
@@ -167,7 +161,7 @@ $toShipCount = $stmtToShip->fetchColumn();
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6" style="text-align: center; color: #999; padding: 50px;">
+                    <td colspan="7" style="text-align: center; color: #999; padding: 50px;">
                         ไม่พบข้อมูลคำสั่งซื้อ
                     </td>
                 </tr>

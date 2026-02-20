@@ -1,5 +1,4 @@
 <?php
-require_once 'includes/init.php';
 
 // Sanitize Cart (Remove legacy items without variant ID)
 if (isset($_SESSION['cart'])) {
@@ -23,6 +22,8 @@ if (isset($_SESSION['cart'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="XIVEX - สตรีทแวร์พรีเมียมสไตล์ไทย เสื้อผ้าแฟชั่นคุณภาพ ออกแบบด้วยความใส่ใจในทุกรายละเอียด">
+    <link rel="icon" href="<?= defined('SITE_URL') ? SITE_URL : '' ?>/favicon.ico" type="image/x-icon">
     <title>XIVEX | สตรีทแวร์พรีเมียม</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,8 +43,6 @@ if (isset($_SESSION['cart'])) {
             font-weight: 900 !important;
         }
     </style>
-    <!-- Favicon -->
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
 

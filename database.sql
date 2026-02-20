@@ -6,9 +6,11 @@ USE xivex_store;
 -- Users Table
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin') DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -17,9 +19,11 @@ CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    base_price DECIMAL(10, 2) NOT NULL, -- Starting price for display
+    base_price DECIMAL(10, 2) NOT NULL,
     image VARCHAR(255),
     category VARCHAR(50),
+    badge VARCHAR(50) DEFAULT NULL,
+    is_visible TINYINT(1) DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -36,16 +40,34 @@ CREATE TABLE IF NOT EXISTS product_variants (
 -- Orders Table (Updated for Guest Checkout)
 CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT DEFAULT NULL, -- Nullable for Guest
+    user_id INT DEFAULT NULL,
     customer_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     address TEXT NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL,
     payment_method VARCHAR(50) DEFAULT 'COD',
-    status VARCHAR(20) DEFAULT 'pending', -- pending, paid, shipped, cancelled
+    payment_slip VARCHAR(255) DEFAULT NULL,
+    tracking_number VARCHAR(100) DEFAULT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL
+);
+
+-- Settings Table
+CREATE TABLE IF NOT EXISTS settings (
+    setting_key VARCHAR(100) PRIMARY KEY,
+    setting_value TEXT
+);
+
+-- Chat Messages Table
+CREATE TABLE IF NOT EXISTS chat_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id VARCHAR(128) NOT NULL,
+    message TEXT NOT NULL,
+    is_admin TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_session (session_id)
 );
 
 -- Order Items Table (New)

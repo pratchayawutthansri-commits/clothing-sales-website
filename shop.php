@@ -8,8 +8,10 @@ $whereClause = "";
 $params = [];
 
 if ($category) {
-    $whereClause = "WHERE category = ?";
+    $whereClause = "WHERE category = ? AND is_visible = 1";
     $params[] = $category;
+} else {
+    $whereClause = "WHERE is_visible = 1";
 }
 
 // Categories for Filter (Matched with DB)

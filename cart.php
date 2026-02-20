@@ -7,33 +7,53 @@ $total = 0;
 
 if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     
+    // Parse cart keys into product/variant IDs
+    $cartParsed = [];
     foreach ($_SESSION['cart'] as $key => $quantity) {
-        // Key is "ProductID_VariantID"
         $parts = explode('_', $key);
-        $productId = $parts[0];
-        $variantId = isset($parts[1]) ? $parts[1] : 0;
-        
-        // Fetch Product Info
-        $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-        $stmt->execute([$productId]);
-        $product = $stmt->fetch();
-
-        // Fetch Variant Info for Price/Size
-        $stmtv = $pdo->prepare("SELECT * FROM product_variants WHERE id = ?");
-        $stmtv->execute([$variantId]);
-        $variant = $stmtv->fetch();
-        
-        if ($product && $variant) {
-            $product['cart_key'] = $key;
-            $product['size'] = $variant['size'];
-            $product['price'] = $variant['price']; // Use variant price
-            $product['qty'] = $quantity;
-            $product['subtotal'] = $product['price'] * $quantity;
-            $total += $product['subtotal'];
-            $cartItems[] = $product;
+        $productId = (int)$parts[0];
+        $variantId = isset($parts[1]) ? (int)$parts[1] : 0;
+        if ($productId > 0 && $variantId > 0) {
+            $cartParsed[$key] = ['pid' => $productId, 'vid' => $variantId, 'qty' => $quantity];
         } else {
-            // Product or Variant not found (Ghost item) -> Remove from session
             unset($_SESSION['cart'][$key]);
+        }
+    }
+
+    if (!empty($cartParsed)) {
+        // Build single JOIN query for all items
+        $variantIds = array_column($cartParsed, 'vid');
+        $placeholders = implode(',', array_fill(0, count($variantIds), '?'));
+        
+        $stmt = $pdo->prepare("
+            SELECT p.*, v.id AS variant_id, v.size, v.price AS variant_price
+            FROM products p
+            JOIN product_variants v ON v.product_id = p.id
+            WHERE v.id IN ($placeholders)
+        ");
+        $stmt->execute($variantIds);
+        $results = $stmt->fetchAll();
+        
+        // Index results by variant_id for quick lookup
+        $resultMap = [];
+        foreach ($results as $row) {
+            $resultMap[$row['variant_id']] = $row;
+        }
+        
+        // Build cart items from results
+        foreach ($cartParsed as $key => $cartData) {
+            if (isset($resultMap[$cartData['vid']])) {
+                $row = $resultMap[$cartData['vid']];
+                $row['cart_key'] = $key;
+                $row['price'] = $row['variant_price'];
+                $row['qty'] = $cartData['qty'];
+                $row['subtotal'] = $row['price'] * $cartData['qty'];
+                $total += $row['subtotal'];
+                $cartItems[] = $row;
+            } else {
+                // Product or Variant not found (Ghost item) -> Remove from session
+                unset($_SESSION['cart'][$key]);
+            }
         }
     }
 }
@@ -69,13 +89,13 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
                                 </div>
                             </div>
                         </td>
-                        <td><?= $item['size'] ?></td>
+                        <td><?= htmlspecialchars($item['size']) ?></td>
                         <td>฿<?= number_format($item['price'], 0) ?></td>
                         <td>
                             <form action="cart_action.php" method="POST" style="display:inline;">
                                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                 <input type="hidden" name="action" value="update">
-                                <input type="hidden" name="key" value="<?= $item['cart_key'] ?>">
+                                <input type="hidden" name="key" value="<?= htmlspecialchars($item['cart_key']) ?>">
                                 <input type="number" name="quantity" value="<?= $item['qty'] ?>" class="qty-input" min="1" max="100" onchange="this.form.submit()">
                             </form>
                         </td>
@@ -84,7 +104,7 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
                             <form action="cart_action.php" method="POST">
                                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                 <input type="hidden" name="action" value="remove">
-                                <input type="hidden" name="key" value="<?= $item['cart_key'] ?>">
+                                <input type="hidden" name="key" value="<?= htmlspecialchars($item['cart_key']) ?>">
                                 <button type="submit" class="remove-btn">ลบ</button>
                             </form>
                         </td>

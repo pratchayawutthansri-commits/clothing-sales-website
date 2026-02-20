@@ -73,7 +73,11 @@ $products = $stmt->fetchAll();
                 <td>฿<?= number_format($product['base_price'], 0) ?></td>
                 <td>
                     <a href="edit_product.php?id=<?= $product['id'] ?>" style="color:#ffc107; margin-right:10px;">แก้ไข</a>
-                    <a href="delete_product.php?id=<?= $product['id'] ?>" onclick="return confirm('ยืนยันที่จะลบสินค้านี้? ข้อมูลทั้งหมดรวมถึงสต็อกจะหายไป')" style="color:#dc3545;">ลบ</a>
+                    <form action="delete_product.php" method="POST" style="display:inline;" onsubmit="return confirm('ยืนยันที่จะลบสินค้านี้? ข้อมูลทั้งหมดรวมถึงสต็อกจะหายไป')">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['admin_csrf_token'] ?? '' ?>">
+                        <input type="hidden" name="id" value="<?= $product['id'] ?>">
+                        <button type="submit" style="color:#dc3545; background:none; border:none; cursor:pointer; font-family:inherit; font-size:inherit;">ลบ</button>
+                    </form>
                 </td>
             </tr>
             <?php endforeach; ?>

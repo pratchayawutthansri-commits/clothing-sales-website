@@ -1,15 +1,15 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-require_once 'includes/db.php';
-require_once 'includes/functions.php';
+require_once 'includes/init.php';
 
 $order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 
-if ($order_id === 0) {
+// IDOR Protection: Only allow viewing if this user just placed this order
+if ($order_id === 0 || !isset($_SESSION['last_order_id']) || $_SESSION['last_order_id'] !== $order_id) {
     redirect('index.php');
 }
+// Clear after viewing to prevent replay
+unset($_SESSION['last_order_id']);
+
 
 // Fetch Order Details for confirmation (Optional: could just show ID)
 $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ?");

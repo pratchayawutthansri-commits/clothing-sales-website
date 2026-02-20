@@ -70,21 +70,14 @@ while ($row = $stmt->fetch()) {
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>Xivex Admin</h2>
-    <a href="index.php">ภาพรวม (Dashboard)</a>
-    <a href="products.php">จัดการสินค้า (Products)</a>
-    <a href="orders.php">คำสั่งซื้อ (Orders)</a>
-    <a href="settings.php" class="active">ตั้งค่า (Settings)</a>
-    <a href="logout.php" style="margin-top: auto; color: #ff6b6b; border:none;">ออกจากระบบ</a>
-</div>
+<?php include 'includes/sidebar.php'; ?>
 
 <div class="content">
     <div class="box" style="margin-bottom: 30px; max-width: 800px;">
         <h1>ตั้งค่าร้านค้า (Shop Settings)</h1>
         
         <?php if ($success): ?>
-            <div class="alert alert-success"><?= $success ?></div>
+            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
         <?php endif; ?>
 
         <form method="POST">

@@ -1,7 +1,7 @@
 <?php
 require_once 'includes/config.php'; // Admin config
-require_once '../includes/db.php'; // Main DB
 checkAdminAuth();
+require_once '../includes/db.php'; // Main DB
 
 // Fetch active sessions (users who messaged)
 $stmt = $pdo->query("SELECT session_id, MAX(created_at) as last_msg, COUNT(*) as msg_count FROM chat_messages GROUP BY session_id ORDER BY last_msg DESC");
@@ -35,9 +35,9 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
     <div style="width: 300px; background: white; border-right: 1px solid #ddd; overflow-y: auto;">
         <div style="padding: 20px; border-bottom: 1px solid #eee; font-weight: bold;">Inbox (<?= count($sessions) ?>)</div>
         <?php foreach ($sessions as $s): ?>
-            <a href="?session=<?= $s['session_id'] ?>" style="display: block; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; text-decoration: none; color: #333; <?= $currentSession === $s['session_id'] ? 'background:#f0f7ff;' : '' ?>">
-                <div style="font-weight: 600; font-size: 0.9rem;">Guest #<?= substr($s['session_id'], 0, 8) ?></div>
-                <div style="font-size: 0.8rem; color: #888; margin-top: 5px;"><?= date('H:i', strtotime($s['last_msg'])) ?> · <?= $s['msg_count'] ?> msgs</div>
+            <a href="?session=<?= htmlspecialchars($s['session_id'], ENT_QUOTES, 'UTF-8') ?>" style="display: block; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; text-decoration: none; color: #333; <?= $currentSession === $s['session_id'] ? 'background:#f0f7ff;' : '' ?>">
+                <div style="font-weight: 600; font-size: 0.9rem;">Guest #<?= htmlspecialchars(substr($s['session_id'], 0, 8)) ?></div>
+                <div style="font-size: 0.8rem; color: #888; margin-top: 5px;"><?= date('H:i', strtotime($s['last_msg'])) ?> · <?= (int)$s['msg_count'] ?> msgs</div>
             </a>
         <?php endforeach; ?>
     </div>
@@ -46,7 +46,7 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
     <div style="flex: 1; display: flex; flex-direction: column; background: #f4f6f8;">
         <?php if ($currentSession): ?>
             <div style="padding: 15px 30px; background: white; border-bottom: 1px solid #ddd; font-weight: bold;">
-                Chat verifying #<?= $currentSession ?>
+                Chat with #<?= htmlspecialchars($currentSession) ?>
             </div>
             
             <div id="adminChatMessages" style="flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
@@ -66,7 +66,7 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
 </div>
 
 <script>
-    const currentSession = "<?= $currentSession ?>";
+    const currentSession = "<?= htmlspecialchars($currentSession, ENT_QUOTES, 'UTF-8') ?>";
     
     if (currentSession) {
         // Poll for messages
@@ -85,6 +85,7 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
             
             await fetch('../api/chat.php', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: msg, target_session: currentSession })
             });
         });

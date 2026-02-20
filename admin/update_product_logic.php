@@ -16,8 +16,7 @@ if (!isset($_POST['csrf_token']) || !isset($_SESSION['admin_csrf_token']) || !ha
 $id = (int)$_POST['id'];
 $name = $_POST['name'];
 $category = $_POST['category'];
-$description = $_POST['description'];
-$description = $_POST['description'];
+$description = trim($_POST['description']);
 $base_price = $_POST['base_price'];
 $badge = $_POST['badge'] ?? null;
 $is_visible = isset($_POST['is_visible']) ? 1 : 0;

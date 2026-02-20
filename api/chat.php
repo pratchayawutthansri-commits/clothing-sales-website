@@ -4,7 +4,9 @@ header('Content-Type: application/json');
 require_once '../includes/config.php';
 require_once '../includes/db.php';
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $session_id = session_id();
 
 // Handle Request

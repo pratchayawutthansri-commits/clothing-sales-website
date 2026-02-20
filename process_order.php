@@ -37,9 +37,8 @@ try {
         $productId = $parts[0];
         $variantId = $parts[1];
 
-        // Fetch details AND STOCK to ensure price hacking is impossible and stock is available
-        // Use FOR UPDATE to lock row prevents race conditions
-        $stmt = $pdo->prepare("SELECT p.name, v.price, v.size, v.stock FROM products p JOIN product_variants v ON p.id = v.product_id WHERE p.id = ? AND v.id = ?");
+        // Fetch details AND STOCK with row lock to prevent race conditions
+        $stmt = $pdo->prepare("SELECT p.name, v.price, v.size, v.stock FROM products p JOIN product_variants v ON p.id = v.product_id WHERE p.id = ? AND v.id = ? FOR UPDATE");
         $stmt->execute([$productId, $variantId]);
         $item = $stmt->fetch();
 
@@ -71,8 +70,12 @@ try {
         $ext = strtolower(pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION));
         
         if (in_array($ext, $allowed)) {
+            $uploadDir = 'uploads/slips/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
             $newName = uniqid() . '.' . $ext;
-            $dest = 'uploads/slips/' . $newName;
+            $dest = $uploadDir . $newName;
             if (move_uploaded_file($_FILES['slip']['tmp_name'], $dest)) {
                 $slipPath = $dest;
             } else {
@@ -109,12 +112,17 @@ try {
     $pdo->commit();
 
     // 5. Clear Cart & Redirect
+    $_SESSION['last_order_id'] = (int)$order_id; // For IDOR protection on success page
     unset($_SESSION['cart']);
     redirect("success.php?order_id=" . $order_id);
 
 } catch (Exception $e) {
     $pdo->rollBack();
-    error_log($e->getMessage());
-    die("เกิดข้อผิดพลาดในการสั่งซื้อ: " . $e->getMessage());
+    error_log("Order Error: " . $e->getMessage());
+    // Show stock-related messages directly; hide technical errors
+    $userMessage = (strpos($e->getMessage(), 'สินค้า') !== false)
+        ? $e->getMessage()
+        : "เกิดข้อผิดพลาดในการสั่งซื้อ กรุณาลองใหม่อีกครั้ง";
+    die($userMessage);
 }
 ?>

@@ -22,11 +22,16 @@ function formatPrice($price) {
 
 // Function to redirect safely
 function redirect($url) {
+    // Sanitize: only allow relative URLs or valid http(s) URLs
+    if (!preg_match('#^(https?://|/)#i', $url) && !preg_match('#^[a-zA-Z0-9_./-]+(\?.*)?$#', $url)) {
+        $url = 'index.php';
+    }
     if (!headers_sent()) {
         header("Location: $url");
         exit;
     } else {
-        echo "<script>window.location.href='$url';</script>";
+        $safeUrl = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+        echo "<script>window.location.href='" . $safeUrl . "';</script>";
         exit;
     }
 }

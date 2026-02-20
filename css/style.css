@@ -141,6 +141,7 @@ header {
     top: 0;
     z-index: 1000;
     background-color: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -321,7 +322,7 @@ header .container {
 }
 
 /* Product Card */
-.product-card {}
+/* .product-card - styled via children below */
 
 .product-image-wrapper {
     width: 100%;

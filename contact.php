@@ -128,7 +128,7 @@ require_once 'includes/header.php';
     </div>
 </div>
 
-<div class="contact-container">
+<div class="contact-container" style="grid-template-columns: 1fr;">
     <div class="contact-info">
         <div class="info-item">
             <div class="info-label">ที่อยู่ (Address)</div>
@@ -148,24 +148,6 @@ require_once 'includes/header.php';
                 <a href="#">Line OA</a>
             </div>
         </div>
-    </div>
-    
-    <div class="contact-form-wrapper">
-        <form action="#" method="POST">
-            <div class="form-group">
-                <label>ชื่อ (Name)</label>
-                <input type="text" class="form-control" placeholder="ระบุชื่อของคุณ">
-            </div>
-            <div class="form-group">
-                <label>อีเมล (Email)</label>
-                <input type="email" class="form-control" placeholder="ระบุอีเมล">
-            </div>
-            <div class="form-group">
-                <label>ข้อความ (Message)</label>
-                <textarea class="form-control" rows="4" placeholder="ต้องการสอบถามอะไร? (พิมพ์ข้อความของคุณที่นี่)"></textarea>
-            </div>
-            <button type="submit" class="btn-send">ส่งข้อความ</button>
-        </form>
     </div>
 </div>
 

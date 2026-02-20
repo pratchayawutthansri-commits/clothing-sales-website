@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 1. Handle File Upload
         $target_dir = "../images/";
         if (!file_exists($target_dir)) {
-            mkdir($target_dir, 0777, true);
+            mkdir($target_dir, 0755, true);
         }
 
         $image = $_FILES['image'];
@@ -57,14 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $product_id = $pdo->lastInsertId();
 
         // 3. Insert Variants
-        $base_price = $_POST['base_price'];
-        $badge = $_POST['badge'] ?? null;
-        $is_visible = isset($_POST['is_visible']) ? 1 : 0;
-
-        // Validate Inputs
-        if (empty($_POST['name']) || empty($base_price)) {
-            die("กรุณากรอกข้อมูลที่จำเป็นให้ครบ");
-        }
         $sizes = $_POST['sizes'];
         $prices = $_POST['prices'];
         $stocks = $_POST['stocks'];

@@ -4,8 +4,11 @@
 .DS_Store
 Thumbs.db
 
-# Sensitive setup scripts (contain hardcoded credentials)
+# Debug & migration scripts (should not be in production)
+check_db_columns.php
+add_checkout_columns.php
 admin/setup_auth.php
 admin/setup_chat_db.php
 admin/fix_chat_table.php
+admin/fix_db.php
 admin/create_chat_table_final.php

@@ -29,10 +29,7 @@ checkAdminAuth();
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>Xivex Admin</h2>
-    <a href="products.php">← กลับไปหน้ารายการ</a>
-</div>
+<?php include 'includes/sidebar.php'; ?>
 
 <div class="content">
     <h1>เพิ่มสินค้าใหม่</h1>

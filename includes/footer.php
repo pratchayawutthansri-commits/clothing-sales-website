@@ -28,9 +28,9 @@
             <div class="footer-col">
                 <h4>รับข่าวสาร</h4>
                 <p style="color:#aaa; font-size:0.9rem;">ติดตามคอลเลคชั่นใหม่ก่อนใคร</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="อีเมลของคุณ">
-                    <button type="button">→</button>
+                <form class="newsletter-form" action="#" method="POST">
+                    <input type="email" name="newsletter_email" placeholder="อีเมลของคุณ" required>
+                    <button type="submit">→</button>
                 </form>
             </div>
         </div>

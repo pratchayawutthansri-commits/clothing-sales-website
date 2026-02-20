@@ -23,4 +23,4 @@ define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') ?: '');
 
 // App Settings
-define('SITE_URL', 'http://localhost/Xivex/');
+define('SITE_URL', getenv('SITE_URL') ?: 'http://localhost/Xivex/');
