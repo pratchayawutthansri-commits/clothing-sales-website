@@ -11,5 +11,9 @@ function checkAdminAuth() {
         header("Location: login.php");
         exit;
     }
+    // Ensure CSRF token always exists for admin
+    if (empty($_SESSION['admin_csrf_token'])) {
+        $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
+    }
 }
 ?>

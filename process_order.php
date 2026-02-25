@@ -34,8 +34,9 @@ try {
 
     foreach ($_SESSION['cart'] as $key => $qty) {
         $parts = explode('_', $key);
-        $productId = $parts[0];
-        $variantId = $parts[1];
+        $productId = (int)($parts[0] ?? 0);
+        $variantId = (int)($parts[1] ?? 0);
+        if ($productId <= 0 || $variantId <= 0) continue;
 
         // Fetch details AND STOCK with row lock to prevent race conditions
         $stmt = $pdo->prepare("SELECT p.name, v.price, v.size, v.stock FROM products p JOIN product_variants v ON p.id = v.product_id WHERE p.id = ? AND v.id = ? FOR UPDATE");
@@ -84,7 +85,12 @@ try {
         }
     }
 
-    // 4. Insert Order
+    // 4. Add Shipping Cost
+    $stmtShipping = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'shipping_cost'");
+    $shippingCost = (float)($stmtShipping->fetchColumn() ?: 50);
+    $total_price += $shippingCost;
+
+    // 5. Insert Order
     $stmtOrder = $pdo->prepare("INSERT INTO orders (customer_name, email, phone, address, total_price, payment_method, payment_slip, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')");
     $stmtOrder->execute([$name, $email, $phone, $address, $total_price, $payment_method, $slipPath]);
     $order_id = $pdo->lastInsertId();

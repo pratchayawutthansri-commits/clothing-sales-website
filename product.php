@@ -11,7 +11,7 @@ $error_message = '';
 
 try {
     // 1. Fetch Product
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ? AND is_visible = 1");
     $stmt->execute([$id]);
     $product = $stmt->fetch();
 

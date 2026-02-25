@@ -109,9 +109,9 @@ include 'includes/header.php';
                 <div id="slip-upload" style="margin-top:20px; background:#f9f9f9; padding:20px; border-radius:8px; border: 1px solid #eee;">
                      <label style="display:block; margin-bottom:10px; font-weight:600;">โอนเงินมาที่ (Transfer To)</label>
                      <div style="background: white; padding: 15px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 15px;">
-                        <strong><?= htmlspecialchars($settings['bank_name']) ?></strong><br>
-                        เลขบัญชี: <span style="font-size: 1.1em; color: #007bff;"><?= htmlspecialchars($settings['bank_account']) ?></span><br>
-                        ชื่อบัญชี: <?= htmlspecialchars($settings['bank_owner']) ?>
+                        <strong><?= htmlspecialchars($settings['bank_name'] ?? 'ยังไม่ได้ตั้งค่า') ?></strong><br>
+                        เลขบัญชี: <span style="font-size: 1.1em; color: #007bff;"><?= htmlspecialchars($settings['bank_account'] ?? '-') ?></span><br>
+                        ชื่อบัญชี: <?= htmlspecialchars($settings['bank_owner'] ?? '-') ?>
                      </div>
                      
                      <label style="display:block; margin-bottom:10px; font-weight:600;">แนบสลิปการโอนเงิน (Payment Slip) <span style="color:red">*</span></label>

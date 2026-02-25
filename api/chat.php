@@ -20,6 +20,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $message = trim($input['message']);
+    
+    // Message length limit
+    if (mb_strlen($message) > 500) {
+        echo json_encode(['status' => 'error', 'message' => 'Message too long (max 500 chars)']);
+        exit;
+    }
+
+    // Basic rate limiting (session-based)
+    if (!isset($_SESSION['chat_rate'])) $_SESSION['chat_rate'] = [];
+    $_SESSION['chat_rate'][] = time();
+    // Keep only messages from last 60 seconds
+    $_SESSION['chat_rate'] = array_filter($_SESSION['chat_rate'], fn($t) => $t > time() - 60);
+    if (count($_SESSION['chat_rate']) > 20) {
+        echo json_encode(['status' => 'error', 'message' => 'Rate limit exceeded. Please wait.']);
+        exit;
+    }
+
     $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 
     // For admin, we need user_session_id from post data to reply to specific user
