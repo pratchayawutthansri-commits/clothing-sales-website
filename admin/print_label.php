@@ -33,13 +33,21 @@ if (!$order) die("Order not found");
 </head>
 <body onload="window.print()">
 
+<?php
+// Fetch sender info from settings (with fallbacks)
+$stmtShopName = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'shop_name'");
+$shopName = $stmtShopName->fetchColumn() ?: 'XIVEX STORE';
+$stmtShopAddr = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'shop_address'");
+$shopAddress = $stmtShopAddr->fetchColumn() ?: '999/9 Siam Paragon, Rama 1 Road, Pathum Wan, Bangkok 10330';
+$stmtShopPhone = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'shop_phone'");
+$shopPhone = $stmtShopPhone->fetchColumn() ?: '02-999-9999';
+?>
 <div class="label-box">
     <div class="sender">
         <strong>ผู้ส่ง (Sender):</strong><br>
-        XIVEX STORE (Head Office)<br>
-        999/9 Siam Paragon, Rama 1 Road<br>
-        Pathum Wan, Bangkok 10330<br>
-        Tel: 02-999-9999
+        <?= htmlspecialchars($shopName) ?><br>
+        <?= nl2br(htmlspecialchars($shopAddress)) ?><br>
+        Tel: <?= htmlspecialchars($shopPhone) ?>
     </div>
 
     <div class="receiver">

@@ -68,20 +68,30 @@ try {
     $slipPath = null;
     if ($payment_method === 'BANK_TRANSFER' && isset($_FILES['slip']) && $_FILES['slip']['error'] === 0) {
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-        $ext = strtolower(pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION));
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
         
-        if (in_array($ext, $allowed)) {
-            $uploadDir = 'uploads/slips/';
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
-            $newName = uniqid() . '.' . $ext;
-            $dest = $uploadDir . $newName;
-            if (move_uploaded_file($_FILES['slip']['tmp_name'], $dest)) {
-                $slipPath = $dest;
-            } else {
-                die("Failed to upload slip.");
-            }
+        $ext = strtolower(pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION));
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($_FILES['slip']['tmp_name']);
+        
+        if (!in_array($ext, $allowed) || !in_array($mimeType, $allowedMimes)) {
+            throw new Exception("ประเภทไฟล์ไม่ถูกต้อง (อนุญาต: JPG, PNG, GIF เท่านั้น)");
+        }
+        if ($_FILES['slip']['size'] > $maxSize) {
+            throw new Exception("ไฟล์ใหญ่เกินไป (สูงสุด 5MB)");
+        }
+        
+        $uploadDir = 'uploads/slips/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        $newName = uniqid() . '.' . $ext;
+        $dest = $uploadDir . $newName;
+        if (move_uploaded_file($_FILES['slip']['tmp_name'], $dest)) {
+            $slipPath = $dest;
+        } else {
+            throw new Exception("อัปโหลดสลิปไม่สำเร็จ");
         }
     }
 

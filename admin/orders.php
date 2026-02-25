@@ -32,55 +32,19 @@ $toShipCount = $stmtToShip->fetchColumn();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รายการคำสั่งซื้อ - Xivex Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
     <style>
-        body { font-family: 'Kanit', sans-serif; margin: 0; background: #f9f9f9; display: flex; }
-        .sidebar { width: 250px; background: #1a1a1a; color: white; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .sidebar h2 { margin-top: 0; margin-bottom: 30px; letter-spacing: 1px;}
-        .sidebar a { display: block; color: #ccc; text-decoration: none; padding: 12px 15px; border-bottom: 1px solid #333; transition: 0.3s; }
-        .sidebar a:hover { color: white; background: #333; padding-left: 20px; }
-        .sidebar a.active { color: white; font-weight: bold; background: #333; border-left: 4px solid #fff; }
-        
-        .content { flex: 1; padding: 40px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; }
-        th, td { padding: 18px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f4f4f4; text-transform: uppercase; font-size: 0.85rem; color: #666; font-weight: 500; }
+        /* Page-specific: Orders */
+        th { text-transform: uppercase; font-size: 0.85rem; }
+        th, td { padding: 18px; }
         tr:hover { background: #fafafa; }
-        
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-paid { background: #d4edda; color: #155724; }
-        .status-shipped { background: #cce5ff; color: #004085; }
-        .status-completed { background: #d1e7dd; color: #0f5132; }
-        .status-cancelled { background: #f8d7da; color: #721c24; }
         
         .btn-view { padding: 6px 15px; background: #000; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: 0.3s; }
         .btn-view:hover { background: #444; }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 500;
-            margin-right: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border: none;
-            font-size: 0.9rem;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            opacity: 0.9;
-        }
-        
-        /* Stat Cards */
+        /* Stat Cards (order-specific layout) */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; transition: 0.3s; cursor: pointer; text-decoration: none; color: inherit; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .stat-card { display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-decoration: none; color: inherit; }
         .stat-info h3 { margin: 0; font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-info p { margin: 5px 0 0; font-size: 2rem; font-weight: bold; color: #333; }
         .stat-icon { font-size: 2rem; opacity: 0.2; }

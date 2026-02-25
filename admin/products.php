@@ -14,23 +14,8 @@ $products = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Xivex</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Kanit', sans-serif; margin: 0; background: #f9f9f9; display: flex; }
-        .sidebar { width: 250px; background: #1a1a1a; color: white; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .sidebar h2 { margin-top: 0; margin-bottom: 30px; letter-spacing: 1px;}
-        .sidebar a { display: block; color: #ccc; text-decoration: none; padding: 12px 15px; border-bottom: 1px solid #333; transition: 0.3s; }
-        .sidebar a:hover { color: white; background: #333; padding-left: 20px; }
-        .sidebar a.active { color: white; font-weight: bold; background: #333; border-left: 4px solid #fff; }
-        .content { flex: 1; padding: 40px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .btn { padding: 10px 20px; background: #000; color: white; text-decoration: none; border-radius: 30px; display: inline-block; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
-        .btn-logout { background: #dc3545; }
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f4f4f4; }
-        .thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
-    </style>
+    <link rel="stylesheet" href="css/admin.css">
+
 </head>
 <body>
 

@@ -1,0 +1,223 @@
+/* ============================================
+   Xivex Admin Panel - Shared Styles
+   Common layout, sidebar, and utility styles
+   ============================================ */
+
+/* === Base Layout === */
+body {
+    font-family: 'Kanit', sans-serif;
+    margin: 0;
+    background: #f9f9f9;
+    display: flex;
+}
+
+/* === Sidebar Navigation === */
+.sidebar {
+    width: 250px;
+    background: #1a1a1a;
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-bottom: 1px solid #333;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: white;
+    background: #333;
+    padding-left: 20px;
+}
+
+.sidebar a.active {
+    color: white;
+    font-weight: bold;
+    background: #333;
+    border-left: 4px solid #fff;
+}
+
+/* === Main Content Area === */
+.content {
+    flex: 1;
+    padding: 40px;
+}
+
+/* === Common Elements === */
+h1 {
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* === Tables === */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f4f4f4;
+    color: #666;
+    font-weight: 500;
+}
+
+/* === Buttons === */
+.btn {
+    display: inline-block;
+    padding: 10px 25px;
+    color: white;
+    background: #000;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: 'Kanit', sans-serif;
+    text-align: center;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background: #333;
+}
+
+.btn-secondary {
+    background: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-danger {
+    background: #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-logout {
+    background: #dc3545;
+}
+
+/* === Cards/Boxes === */
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+/* === Forms === */
+.form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label,
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* === Alerts === */
+.alert {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* === Status Badges === */
+.badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-paid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-shipped {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-completed {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* === Image Thumbnails === */
+.thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}

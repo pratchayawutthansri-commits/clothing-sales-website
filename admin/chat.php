@@ -15,14 +15,9 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
     <meta charset="UTF-8">
     <title>Live Chat - Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
     <style>
-        body { font-family: 'Kanit', sans-serif; margin: 0; background: #f9f9f9; display: flex; }
-        .sidebar { width: 250px; background: #1a1a1a; color: white; min-height: 100vh; padding: 20px; box-sizing: border-box; flex-shrink: 0; }
-        .sidebar h2 { margin-top: 0; margin-bottom: 30px; letter-spacing: 1px;}
-        .sidebar a { display: block; color: #ccc; text-decoration: none; padding: 12px 15px; border-bottom: 1px solid #333; transition: 0.3s; }
-        .sidebar a:hover { color: white; background: #333; padding-left: 20px; }
-        .sidebar a.active { color: white; font-weight: bold; background: #333; border-left: 4px solid #fff; }
-        .btn { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        /* admin.css handles sidebar+layout */
     </style>
 </head>
 <body>

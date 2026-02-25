@@ -74,16 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รายละเอียดคำสั่งซื้อ #<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?> - Xivex Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
     <style>
-        body { font-family: 'Kanit', sans-serif; margin: 0; background: #f9f9f9; display: flex; }
-        .sidebar { width: 250px; background: #1a1a1a; color: white; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .sidebar h2 { margin-top: 0; margin-bottom: 30px; letter-spacing: 1px;}
-        .sidebar a { display: block; color: #ccc; text-decoration: none; padding: 12px 15px; border-bottom: 1px solid #333; transition: 0.3s; }
-        .sidebar a:hover { color: white; background: #333; padding-left: 20px; }
-        .content { flex: 1; padding: 40px; }
-        
-        .box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        
+        /* Page-specific: Order Details */
         .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
         .order-header h1 { margin: 0; font-size: 1.8rem; }
         
@@ -97,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
         
         .status-form { display: flex; gap: 10px; align-items: center; }
         
-        /* Modern Input Styling */
         input[type="text"], 
         select { 
             padding: 10px 12px; 
@@ -117,37 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
         .btn-update { padding: 8px 20px; background: #000; color: white; border: none; border-radius: 4px; cursor: pointer; }
         .btn-back { display: inline-block; margin-bottom: 20px; color: #666; text-decoration: none; transition: 0.3s; }
         .btn-back:hover { color: #000; padding-left: 5px; }
-        
-        .btn {
-            display: inline-block;
-            padding: 10px 25px;
-            color: white;
-            background: #000; /* Default Black */
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            margin-right: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border: none;
-            font-size: 0.95rem;
-            cursor: pointer;
-            font-family: 'Kanit', sans-serif;
-            text-align: center;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            background: #333;
-        }
-        
-        /* Specific Button Colors */
-        .btn-secondary {
-            background: #6c757d !important;
-        }
-        .btn-secondary:hover {
-            background: #5a6268 !important;
-        }
     </style>
 </head>
 <body>

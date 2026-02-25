@@ -210,7 +210,7 @@ async function sendMessage() {
     scrollToBottom();
 
     try {
-        await fetch('api/chat.php', {
+        await fetch('<?= rtrim($site_url, "/") ?>/api/chat.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: message })
@@ -224,7 +224,7 @@ async function fetchMessages() {
     if (!isChatOpen) return;
     
     try {
-        const res = await fetch('api/chat.php?action=fetch');
+        const res = await fetch('<?= rtrim($site_url, "/") ?>/api/chat.php?action=fetch');
         const data = await res.json();
         
         if (data.status === 'success') {

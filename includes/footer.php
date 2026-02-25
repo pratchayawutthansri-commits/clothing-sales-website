@@ -41,7 +41,7 @@
     </div>
 </footer>
 
-<script src="js/script.js"></script>
-<?php include 'includes/chat_widget.php'; ?>
+<script src="<?= rtrim($site_url, '/') ?>/js/script.js"></script>
+<?php include __DIR__ . '/chat_widget.php'; ?>
 </body>
 </html>

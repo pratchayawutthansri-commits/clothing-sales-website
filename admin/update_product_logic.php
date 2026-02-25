@@ -31,31 +31,40 @@ try {
     // 2. Handle Image Upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
         $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
         
-        if (in_array($ext, $allowed)) {
-            // Get old image to delete
-            $stmtOld = $pdo->prepare("SELECT image FROM products WHERE id = ?");
-            $stmtOld->execute([$id]);
-            $oldImg = $stmtOld->fetchColumn();
-            
-            // Upload new
-            $newName = uniqid() . '.' . $ext;
-            $dest = '../images/' . $newName;
-            $dbPath = 'images/' . $newName; // Relative to web root
-            
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
-                
-                // Delete old file
-                if ($oldImg && file_exists("../" . $oldImg) && $oldImg !== 'images/placeholder.jpg') {
-                    unlink("../" . $oldImg);
-                }
-                
-                // Update DB with new image
-                $sqlUpdateImg = "UPDATE products SET image = ? WHERE id = ?";
-                $stmtUpdateImg = $pdo->prepare($sqlUpdateImg);
-                $stmtUpdateImg->execute([$dbPath, $id]);
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($_FILES['image']['tmp_name']);
+        
+        if (!in_array($ext, $allowed) || !in_array($mimeType, $allowedMimes)) {
+            throw new Exception("ประเภทไฟล์ภาพไม่ถูกต้อง (อนุญาต: JPG, PNG, WebP)");
+        }
+        if ($_FILES['image']['size'] > $maxSize) {
+            throw new Exception("ไฟล์ภาพใหญ่เกินไป (สูงสุด 5MB)");
+        }
+        
+        // Get old image to delete
+        $stmtOld = $pdo->prepare("SELECT image FROM products WHERE id = ?");
+        $stmtOld->execute([$id]);
+        $oldImg = $stmtOld->fetchColumn();
+        
+        // Upload new
+        $newName = uniqid() . '.' . $ext;
+        $dest = '../images/' . $newName;
+        $dbPath = 'images/' . $newName; // Relative to web root
+        
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
+            // Delete old file
+            if ($oldImg && file_exists("../" . $oldImg) && $oldImg !== 'images/placeholder.jpg') {
+                unlink("../" . $oldImg);
             }
+            
+            // Update DB with new image
+            $sqlUpdateImg = "UPDATE products SET image = ? WHERE id = ?";
+            $stmtUpdateImg = $pdo->prepare($sqlUpdateImg);
+            $stmtUpdateImg->execute([$dbPath, $id]);
         }
     }
 

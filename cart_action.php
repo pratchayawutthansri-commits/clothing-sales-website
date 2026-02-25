@@ -48,7 +48,12 @@ if ($action === 'add') {
     $cartKey = $_POST['key'] ?? '';
     $quantity = (int)$_POST['quantity'];
     
-    // Validate
+    // Validate key format (must be productId_variantId)
+    if (!preg_match('/^\d+_\d+$/', $cartKey)) {
+        redirect('cart.php');
+    }
+    
+    // Validate quantity
     if ($quantity > 100) $quantity = 100;
     
     if ($quantity <= 0) {
@@ -61,6 +66,12 @@ if ($action === 'add') {
 
 } elseif ($action === 'remove') {
     $cartKey = $_POST['key'] ?? '';
+    
+    // Validate key format
+    if (!preg_match('/^\d+_\d+$/', $cartKey)) {
+        redirect('cart.php');
+    }
+    
     unset($_SESSION['cart'][$cartKey]);
     
     redirect('cart.php');

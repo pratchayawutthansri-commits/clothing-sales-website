@@ -44,28 +44,13 @@ while ($row = $stmt->fetch()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตั้งค่าผู้ดูแลระบบ - Xivex Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
     <style>
-        body { font-family: 'Kanit', sans-serif; margin: 0; background: #f9f9f9; display: flex; }
-        .sidebar { width: 250px; background: #1a1a1a; color: white; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .sidebar h2 { margin-top: 0; margin-bottom: 30px; letter-spacing: 1px;}
-        .sidebar a { display: block; color: #ccc; text-decoration: none; padding: 12px 15px; border-bottom: 1px solid #333; transition: 0.3s; }
-        .sidebar a:hover { color: white; background: #333; padding-left: 20px; }
-        .sidebar a.active { color: white; font-weight: bold; background: #333; border-left: 4px solid #fff; }
-        .content { flex: 1; padding: 40px; }
-        
-        .box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; }
-        h1 { margin-top: 0; margin-bottom: 20px; }
-        
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #666; }
+        /* Page-specific: Settings */
+        .box { max-width: 500px; }
         input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        
-        button { padding: 10px 20px; background: #000; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
+        button { padding: 10px 20px; background: #000; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-family: 'Kanit'; }
         button:hover { background: #333; }
-        
-        .alert { padding: 10px; border-radius: 4px; margin-bottom: 20px; }
-        .alert-success { background: #d4edda; color: #155724; }
-        .alert-danger { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>

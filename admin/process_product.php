@@ -23,8 +23,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db_image_path = "images/" . $newFileName;
 
         $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
+        
         if (!in_array($imageExtension, $allowed)) {
             die("Error: Invalid file type. Only JPG, PNG, GIF, WEBP allowed.");
+        }
+        
+        // Validate MIME type
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($image['tmp_name']);
+        if (!in_array($mimeType, $allowedMimes)) {
+            die("Error: File content does not match allowed image types.");
+        }
+        
+        // Validate file size
+        if ($image['size'] > $maxSize) {
+            die("Error: File too large (max 5MB).");
         }
 
         if (!move_uploaded_file($image['tmp_name'], $target_file)) {

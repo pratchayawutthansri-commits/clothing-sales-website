@@ -62,19 +62,10 @@ for ($i = 5; $i >= 0; $i--) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xivex Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
     <style>
-        body { font-family: 'Kanit', sans-serif; margin: 0; background: #f9f9f9; display: flex; }
-        .sidebar { width: 250px; background: #1a1a1a; color: white; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .sidebar h2 { margin-top: 0; margin-bottom: 30px; letter-spacing: 1px;}
-        .sidebar a { display: block; color: #ccc; text-decoration: none; padding: 12px 15px; border-bottom: 1px solid #333; transition: 0.3s; }
-        .sidebar a:hover { color: white; background: #333; padding-left: 20px; }
-        .sidebar a.active { color: white; font-weight: bold; background: #333; border-left: 4px solid #fff; }
-        
-        .content { flex: 1; padding: 40px; }
-        
-        h1 { margin-top: 0; margin-bottom: 30px; }
-        
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        /* Page-specific: Dashboard */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 40px; }
         .stat-card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
         .stat-card:hover { transform: translateY(-5px); }
         .stat-title { color: #666; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
@@ -88,16 +79,6 @@ for ($i = 5; $i >= 0; $i--) {
         
         .recent-orders { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .recent-orders h2 { margin-top: 0; margin-bottom: 20px; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { color: #666; font-weight: 500; }
-        
-        .badge { padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-paid { background: #d4edda; color: #155724; }
-        .status-shipped { background: #cce5ff; color: #004085; }
-        .status-cancelled { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
@@ -117,6 +98,16 @@ for ($i = 5; $i >= 0; $i--) {
             <div class="stat-title">ยอดขายเดือนนี้</div>
             <div class="stat-value">฿<?= number_format($monthlySales, 0) ?></div>
             <div class="stat-desc">เดือน <?= date('F Y') ?></div>
+        </div>
+        <div class="stat-card card-orange">
+            <div class="stat-title">รอตรวจสอบ</div>
+            <div class="stat-value"><?= $pendingOrders ?></div>
+            <div class="stat-desc">ออเดอร์รอดำเนินการ</div>
+        </div>
+        <div class="stat-card" style="border-bottom: 4px solid #6f42c1;">
+            <div class="stat-title">รอจัดส่ง</div>
+            <div class="stat-value"><?= $toShipCount ?></div>
+            <div class="stat-desc">ชำระเงินแล้ว รอส่ง</div>
         </div>
         <div class="stat-card card-red">
             <div class="stat-title">สินค้าใกล้หมด</div>
