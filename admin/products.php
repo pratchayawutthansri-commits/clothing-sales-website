@@ -30,23 +30,23 @@ $products = $stmt->fetchAll();
     
     <?php if (isset($_GET['success'])): ?>
         <div style="background: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-            ทำรายการสำเร็จ
+            <?= __('ap_msg_success') ?>
         </div>
     <?php endif; ?>
 
     <div class="header">
-        <h1>รายการสินค้าทั้งหมด</h1>
-        <a href="add_product.php" class="btn">+ เพิ่มสินค้าใหม่</a>
+        <h1><?= __('ap_title') ?></h1>
+        <a href="add_product.php" class="btn"><?= __('ap_add_new') ?></a>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>รูปภาพ</th>
-                <th>ชื่อสินค้า</th>
-                <th>หมวดหมู่</th>
-                <th>ราคาเริ่มต้น</th>
-                <th>จัดการ</th>
+                <th><?= __('ap_th_image') ?></th>
+                <th><?= __('ap_th_name') ?></th>
+                <th><?= __('ap_th_category') ?></th>
+                <th><?= __('ap_th_price') ?></th>
+                <th><?= __('ap_th_action') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -57,11 +57,11 @@ $products = $stmt->fetchAll();
                 <td><?= htmlspecialchars($product['category']) ?></td>
                 <td>฿<?= number_format($product['base_price'], 0) ?></td>
                 <td>
-                    <a href="edit_product.php?id=<?= $product['id'] ?>" style="color:#ffc107; margin-right:10px;">แก้ไข</a>
-                    <form action="delete_product.php" method="POST" style="display:inline;" onsubmit="return confirm('ยืนยันที่จะลบสินค้านี้? ข้อมูลทั้งหมดรวมถึงสต็อกจะหายไป')">
+                    <a href="edit_product.php?id=<?= $product['id'] ?>" style="color:#ffc107; margin-right:10px;"><?= __('ap_btn_edit') ?></a>
+                    <form action="delete_product.php" method="POST" style="display:inline;" onsubmit="return confirm('<?= __('ap_msg_delete_confirm') ?>')">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['admin_csrf_token'] ?? '' ?>">
                         <input type="hidden" name="id" value="<?= $product['id'] ?>">
-                        <button type="submit" style="color:#dc3545; background:none; border:none; cursor:pointer; font-family:inherit; font-size:inherit;">ลบ</button>
+                        <button type="submit" style="color:#dc3545; background:none; border:none; cursor:pointer; font-family:inherit; font-size:inherit;"><?= __('ap_btn_delete') ?></button>
                     </form>
                 </td>
             </tr>

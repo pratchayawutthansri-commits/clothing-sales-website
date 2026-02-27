@@ -31,11 +31,11 @@ try {
             $max_price = max($prices);
         }
     } else {
-        $error_message = "ไม่พบสินค้าที่คุณต้องการ";
+        $error_message = __('prod_not_found');
     }
 } catch (Exception $e) {
     error_log($e->getMessage());
-    $error_message = "เกิดข้อผิดพลาดในการโหลดข้อมูล";
+    $error_message = __('prod_error_load');
 }
 
 // --- VIEW RENDERING ---
@@ -46,7 +46,7 @@ include 'includes/header.php';
     <?php if ($error_message): ?>
         <div style="padding:100px 0; text-align:center;">
             <h2><?= htmlspecialchars($error_message) ?></h2>
-            <a href="shop.php" class="btn">กลับไปที่ร้านค้า</a>
+            <a href="shop.php" class="btn"><?= __('prod_back_shop') ?></a>
         </div>
     <?php else: ?>
         <div class="product-detail-container">
@@ -55,7 +55,7 @@ include 'includes/header.php';
             </div>
             
             <div class="detail-info">
-                <a href="shop.php" class="back-link">← กลับไปหน้าร้านค้า</a>
+                <a href="shop.php" class="back-link">&larr; <?= __('prod_back_shop') ?></a>
                 <h1><?= htmlspecialchars($product['name']) ?></h1>
                 
                 <p class="detail-price" id="display-price">
@@ -78,7 +78,7 @@ include 'includes/header.php';
                     
                     <?php if (count($variants) > 0): ?>
                     <div class="form-group">
-                        <label>เลือกไซส์</label>
+                        <label><?= __('prod_select_size') ?></label>
                         <div class="size-selector">
                             <?php foreach ($variants as $index => $variant): ?>
                             <label class="size-option">
@@ -93,11 +93,11 @@ include 'includes/header.php';
                     <?php endif; ?>
                     
                     <div class="form-group">
-                         <label>จำนวน</label>
+                         <label><?= __('prod_qty') ?></label>
                          <input type="number" name="quantity" value="1" min="1" max="100" style="padding: 10px; width: 60px; text-align: center; border: 1px solid #ddd;">
                     </div>
 
-                    <button type="submit" class="btn add-to-cart-btn">เพิ่มลงตะกร้า</button>
+                    <button type="submit" class="btn add-to-cart-btn"><?= mb_strtoupper(__('prod_add_cart')) ?></button>
                 </form>
             </div>
         </div>

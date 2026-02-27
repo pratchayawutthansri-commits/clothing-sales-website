@@ -15,17 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 1. Handle Shop Settings
     if (isset($_POST['update_settings'])) {
         $data = [
-            'bank_name' => $_POST['bank_name'],
-            'bank_account' => $_POST['bank_account'],
-            'bank_owner' => $_POST['bank_owner'],
-            'shipping_cost' => $_POST['shipping_cost']
+            'bank_name' => trim($_POST['bank_name']),
+            'bank_account' => trim($_POST['bank_account']),
+            'bank_owner' => trim($_POST['bank_owner']),
+            'shipping_cost' => max(0, (float)$_POST['shipping_cost'])
         ];
 
         $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES (?, ?)");
         foreach ($data as $key => $val) {
             $stmt->execute([$key, $val]);
         }
-        $success = "บันทึกการตั้งค่าร้านค้าเรียบร้อยแล้ว";
+        $success = "Shop settings saved successfully";
     }
     
 }
@@ -42,7 +42,7 @@ while ($row = $stmt->fetch()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตั้งค่าผู้ดูแลระบบ - Xivex Admin</title>
+    <title>Admin Settings - Xivex Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
     <style>
@@ -59,7 +59,7 @@ while ($row = $stmt->fetch()) {
 
 <div class="content">
     <div class="box" style="margin-bottom: 30px; max-width: 800px;">
-        <h1>ตั้งค่าร้านค้า (Shop Settings)</h1>
+        <h1>Shop Settings</h1>
         
         <?php if ($success): ?>
             <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
@@ -69,29 +69,29 @@ while ($row = $stmt->fetch()) {
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['admin_csrf_token'] ?? '' ?>">
             <input type="hidden" name="update_settings" value="1">
             
-            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">ข้อมูลธนาคาร (Bank Info)</h3>
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">Bank Info</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="form-group">
-                    <label>ชื่อธนาคาร</label>
+                    <label>Bank Name</label>
                     <input type="text" name="bank_name" value="<?= htmlspecialchars($currentSettings['bank_name'] ?? '') ?>" required>
                 </div>
                 <div class="form-group">
-                    <label>เลขที่บัญชี</label>
+                    <label>Account Number</label>
                     <input type="text" name="bank_account" value="<?= htmlspecialchars($currentSettings['bank_account'] ?? '') ?>" required>
                 </div>
                 <div class="form-group">
-                    <label>ชื่อบัญชี</label>
+                    <label>Account Name</label>
                     <input type="text" name="bank_owner" value="<?= htmlspecialchars($currentSettings['bank_owner'] ?? '') ?>" required>
                 </div>
             </div>
 
-            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; margin-top: 30px;">การจัดส่ง (Shipping)</h3>
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; margin-top: 30px;">Shipping</h3>
             <div class="form-group">
-                <label>ค่าจัดส่ง (บาท)</label>
+                <label>Shipping Cost (THB)</label>
                 <input type="number" name="shipping_cost" value="<?= htmlspecialchars($currentSettings['shipping_cost'] ?? '50') ?>" required min="0">
             </div>
             
-            <button type="submit">บันทึกข้อมูลร้านค้า</button>
+            <button type="submit">Save Shop Settings</button>
         </form>
     </div>
 

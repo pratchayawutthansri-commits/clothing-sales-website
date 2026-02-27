@@ -3,12 +3,30 @@ require_once 'includes/init.php';
 
 $order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 
-// IDOR Protection: Only allow viewing if this user just placed this order
-if ($order_id === 0 || !isset($_SESSION['last_order_id']) || $_SESSION['last_order_id'] !== $order_id) {
+// IDOR Protection: Allow viewing if
+// 1) User just placed this order (session token — works once for guests), OR
+// 2) Logged-in user owns this order (can revisit anytime)
+$allowed = false;
+
+if ($order_id > 0) {
+    // Check session token (first visit after placing order)
+    if (isset($_SESSION['last_order_id']) && $_SESSION['last_order_id'] === $order_id) {
+        $allowed = true;
+        unset($_SESSION['last_order_id']); // Clear for guests
+    }
+    // Check ownership for logged-in users
+    if (!$allowed && isset($_SESSION['user_id'])) {
+        $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM orders WHERE id = ? AND user_id = ?");
+        $stmtCheck->execute([$order_id, $_SESSION['user_id']]);
+        if ($stmtCheck->fetchColumn() > 0) {
+            $allowed = true;
+        }
+    }
+}
+
+if (!$allowed) {
     redirect('index.php');
 }
-// Clear after viewing to prevent replay
-unset($_SESSION['last_order_id']);
 
 
 // Fetch Order Details for confirmation (Optional: could just show ID)
@@ -22,30 +40,32 @@ include 'includes/header.php';
 <div class="container" style="padding: 100px 0; text-align: center;">
     <div style="max-width: 600px; margin: 0 auto;">
         <div style="font-size: 5rem; color: #4CAF50; margin-bottom: 20px;">✓</div>
-        <h1 style="font-size: 2.5rem; margin-bottom: 15px;">ขอบคุณสำหรับการสั่งซื้อ!</h1>
-        <p style="font-size: 1.2rem; color: #666; margin-bottom: 20px;">
-            หมายเลขคำสั่งซื้อของคุณคือ: <strong>#<?= str_pad($order_id, 6, '0', STR_PAD_LEFT) ?></strong>
+        <h1 style="font-size: 2.5rem; margin-bottom: 15px;"><?= __('suc_thank_you') ?></h1>
+        <p style="font-size: 1.2rem; margin-bottom: 30px; color: #555;">
+            <?= __('suc_order_num') ?> <strong>#<?= str_pad($order_id, 6, '0', STR_PAD_LEFT) ?></strong>
         </p>
-        
-        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #c8e6c9; color: #2e7d32;">
-            <p style="margin: 0; font-weight: 500;">
-                📧 เลขพัสดุจะถูกส่งไปยังอีเมล <strong><?= htmlspecialchars($order['email']) ?></strong> เมื่อทางร้านจัดส่งสินค้าแล้ว
-            </p>
-        </div>
-        
-        <div style="background: #f9f9f9; padding: 30px; text-align: left; border-radius: 8px;">
-            <h3>รายละเอียดการจัดส่ง</h3>
-            <p style="margin-top: 10px;"><strong>คุณ:</strong> <?= htmlspecialchars($order['customer_name']) ?></p>
-            <p><strong>ที่อยู่:</strong> <?= htmlspecialchars($order['address']) ?></p>
-            <p><strong>เบอร์โทร:</strong> <?= htmlspecialchars($order['phone']) ?></p>
-            <p style="margin-top: 15px; font-size: 1.1rem;">
-                <strong>ยอดสุทธิ:</strong> <?= formatPrice($order['total_price']) ?> 
-                (โอนเงิน)
+
+        <?php if ($order['status'] === 'pending'): ?>
+            <div class="alert alert-info">
+                📧 <?= __('suc_tracking_sent') ?> <strong><?= htmlspecialchars($order['email']) ?></strong> <?= __('suc_once_shipped') ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="order-summary">
+            <h3><?= __('chk_shipping_details') ?></h3>
+            <p style="margin-top: 10px;"><strong><?= __('suc_name') ?></strong> <?= htmlspecialchars($order['customer_name']) ?></p>
+            <p><strong><?= __('suc_address') ?></strong> <?= htmlspecialchars($order['address']) ?></p>
+            <p><strong><?= __('suc_phone') ?></strong> <?= htmlspecialchars($order['phone']) ?></p>
+            <p class="total">
+                <strong><?= __('chk_total_amount') ?>:</strong> <?= formatPrice($order['total_price']) ?> 
+                <?php if ($order['payment_method'] === 'BANK_TRANSFER'): ?>
+                <?= __('suc_bank_transfer') ?>
+                <?php endif; ?>
             </p>
         </div>
 
         <div style="margin-top: 40px;">
-            <a href="index.php" class="btn">กลับไปเลือกซื้อสินค้าต่อ</a>
+            <a href="index.php" class="btn"><?= __('cart_continue') ?></a>
         </div>
     </div>
 </div>

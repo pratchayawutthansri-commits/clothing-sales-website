@@ -19,22 +19,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Security Error: Invalid CSRF Token");
     }
 
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    // Check against Database
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE (username = ? OR email = ?) AND role = 'admin' LIMIT 1");
-    $stmt->execute([$username, $username]); // Allow login by username or email
-    $user = $stmt->fetch();
-
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['is_admin'] = true;
-        $_SESSION['admin_id'] = $user['id']; // Store ID for changing password later
-        session_regenerate_id(true); 
-        header("Location: index.php");
-        exit;
+    // Brute-Force Protection: Max 5 attempts per 15 minutes
+    $maxAttempts = 5;
+    $lockoutTime = 900; // 15 minutes
+    if (!isset($_SESSION['admin_login_attempts'])) $_SESSION['admin_login_attempts'] = [];
+    // Remove attempts older than lockout window
+    $_SESSION['admin_login_attempts'] = array_filter($_SESSION['admin_login_attempts'], fn($t) => $t > time() - $lockoutTime);
+    
+    if (count($_SESSION['admin_login_attempts']) >= $maxAttempts) {
+        $waitMinutes = ceil($lockoutTime / 60);
+        $error = "Too many failed attempts. Please wait {$waitMinutes} minutes.";
     } else {
-        $error = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+
+        // Check against Database
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE (username = ? OR email = ?) AND role = 'admin' LIMIT 1");
+        $stmt->execute([$username, $username]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($password, $user['password'])) {
+            // Clear attempts on success
+            $_SESSION['admin_login_attempts'] = [];
+            $_SESSION['is_admin'] = true;
+            $_SESSION['admin_id'] = $user['id'];
+            session_regenerate_id(true); 
+            header("Location: index.php");
+            exit;
+        } else {
+            $_SESSION['admin_login_attempts'][] = time();
+            $remaining = $maxAttempts - count($_SESSION['admin_login_attempts']);
+            $error = "Invalid username or password" . ($remaining <= 2 ? " ({$remaining} attempts remaining)" : "");
+        }
     }
 }
 ?>

@@ -5,10 +5,16 @@ if (defined('INIT_LOADED')) {
 }
 define('INIT_LOADED', true);
 
-// Start Session if not started
+// Start Session with Security Settings
 if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.cookie_samesite', 'Lax');
+    ini_set('session.use_strict_mode', 1);
     session_start();
 }
+
+// Load Translation Engine
+require_once __DIR__ . '/lang.php';
 
 // Turn on output buffering to prevent header errors
 ob_start();

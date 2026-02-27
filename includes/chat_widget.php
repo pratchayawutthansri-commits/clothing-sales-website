@@ -161,7 +161,7 @@
     <div class="chat-header">
         <div class="chat-title">
             <h4>XIVEX SUPPORT</h4>
-            <span>สอบถามแอดมิน (Admin)</span>
+            <span>Chat with Admin</span>
         </div>
         <div class="close-chat" onclick="toggleChat()">✕</div>
     </div>
@@ -169,13 +169,12 @@
     <div class="chat-messages" id="chatMessages">
         <!-- Default Welcome Message -->
         <div class="message admin">
-            สวัสดีครับ! มีอะไรให้เราช่วยไหมครับ? 👋<br>
-            (Hello! How can we help you today?)
+            Hello! How can we help you today? 👋
         </div>
     </div>
     
     <div class="chat-input-area">
-        <input type="text" class="chat-input" id="chatInput" placeholder="พิมพ์ข้อความ... (Type here)">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Type here...">
         <button class="send-btn" onclick="sendMessage()">➤</button>
     </div>
 </div>
@@ -210,9 +209,9 @@ async function sendMessage() {
     scrollToBottom();
 
     try {
-        await fetch('<?= rtrim($site_url, "/") ?>/api/chat.php', {
+        await fetch('/Xivex/api/chat.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
             body: JSON.stringify({ message: message })
         });
     } catch (e) {
@@ -224,7 +223,7 @@ async function fetchMessages() {
     if (!isChatOpen) return;
     
     try {
-        const res = await fetch('<?= rtrim($site_url, "/") ?>/api/chat.php?action=fetch');
+        const res = await fetch('/Xivex/api/chat.php?action=fetch');
         const data = await res.json();
         
         if (data.status === 'success') {
@@ -236,8 +235,7 @@ async function fetchMessages() {
             // Let's just clear for now to ensure consistency with backend state
             chatContainer.innerHTML = `
                 <div class="message admin">
-                    สวัสดีครับ! มีอะไรให้เราช่วยไหมครับ? 👋<br>
-                    (Hello! How can we help you today?)
+                    Hello! How can we help you today? 👋
                 </div>
             `;
             

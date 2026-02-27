@@ -62,70 +62,76 @@ while ($row = $stmtSettings->fetch()) {
     $settings[$row['setting_key']] = $row['setting_value'];
 }
 $shippingCost = (float)($settings['shipping_cost'] ?? 50);
+
+// Free shipping for logged-in members
+if (isset($_SESSION['user_id'])) {
+    $shippingCost = 0;
+}
+
 $total += $shippingCost;
 
 include 'includes/header.php';
 ?>
 
 <div class="container" style="padding: 60px 0;">
-    <h1 style="text-align:center; margin-bottom: 40px; font-size: 2.5rem;">ชำระเงิน (Checkout)</h1>
+    <h1 style="text-align:center; margin-bottom: 40px; font-size: 2.5rem;"><?= __('chk_title') ?></h1>
 
     <div class="checkout-grid" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 60px;">
         
         <!-- Shipping Form -->
         <div class="shipping-form">
-            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">ที่อยู่จัดส่ง</h3>
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;"><?= __('chk_shipping_details') ?></h3>
             <form action="process_order.php" method="POST" id="checkout-form" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                 
                 <div class="form-group">
-                    <label>ชื่อ-นามสกุล</label>
-                    <input type="text" name="name" required style="width:100%; padding:12px; border:1px solid #ccc;">
+                    <label><?= __('chk_full_name') ?></label>
+                    <input type="text" name="name" required value="<?= isset($_SESSION['name']) ? htmlspecialchars($_SESSION['name']) : '' ?>" style="width:100%; padding:12px; border:1px solid #ccc;">
                 </div>
                 
                 <div class="form-group">
-                    <label>อีเมล</label>
-                    <input type="email" name="email" required style="width:100%; padding:12px; border:1px solid #ccc;">
+                    <label><?= __('chk_email') ?></label>
+                    <input type="email" name="email" required <?= isset($_SESSION['user_id']) ? 'readonly style="background: #f0f0f0; cursor: not-allowed; width:100%; padding:12px; border:1px solid #ccc;"' : 'style="width:100%; padding:12px; border:1px solid #ccc;"' ?> value="<?= isset($_SESSION['user_id']) ? htmlspecialchars(isset($_SESSION['email']) ? $_SESSION['email'] : '') : '' ?>">
                 </div>
                 
                 <div class="form-group">
-                    <label>เบอร์โทรศัพท์</label>
+                    <label><?= __('chk_phone') ?></label>
                     <input type="tel" name="phone" required style="width:100%; padding:12px; border:1px solid #ccc;">
                 </div>
                 
                 <div class="form-group">
-                    <label>ที่อยู่จัดส่ง</label>
+                    <label><?= __('chk_address') ?></label>
                     <textarea name="address" rows="4" required style="width:100%; padding:12px; border:1px solid #ccc;"></textarea>
                 </div>
                 
-                <h3 style="margin: 30px 0 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">วิธีการชำระเงิน</h3>
+                <h3 style="margin: 30px 0 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;"><?= __('chk_payment_method') ?></h3>
                 <div class="payment-methods">
                     <label style="display:block; margin-bottom:15px; cursor:pointer;">
                         <input type="radio" name="payment_method" value="BANK_TRANSFER" checked> 
-                        <span style="font-weight:600; margin-left:10px;">โอนเงินผ่านธนาคาร (Bank Transfer)</span>
+                        <span style="font-weight:600; margin-left:10px;"><?= __('chk_bank_transfer') ?></span>
                     </label>
                 </div>
 
                 <div id="slip-upload" style="margin-top:20px; background:#f9f9f9; padding:20px; border-radius:8px; border: 1px solid #eee;">
-                     <label style="display:block; margin-bottom:10px; font-weight:600;">โอนเงินมาที่ (Transfer To)</label>
+                     <label style="display:block; margin-bottom:10px; font-weight:600;"><?= __('chk_transfer_to') ?></label>
                      <div style="background: white; padding: 15px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 15px;">
-                        <strong><?= htmlspecialchars($settings['bank_name'] ?? 'ยังไม่ได้ตั้งค่า') ?></strong><br>
-                        เลขบัญชี: <span style="font-size: 1.1em; color: #007bff;"><?= htmlspecialchars($settings['bank_account'] ?? '-') ?></span><br>
-                        ชื่อบัญชี: <?= htmlspecialchars($settings['bank_owner'] ?? '-') ?>
+                        <strong><?= htmlspecialchars($settings['bank_name'] ?? __('chk_not_set')) ?></strong><br>
+                        <?= __('chk_acc_number') ?> <span style="font-size: 1.1em; color: #007bff;"><?= htmlspecialchars($settings['bank_account'] ?? '-') ?></span><br>
+                        <?= __('chk_acc_name') ?> <?= htmlspecialchars($settings['bank_owner'] ?? '-') ?>
                      </div>
                      
-                     <label style="display:block; margin-bottom:10px; font-weight:600;">แนบสลิปการโอนเงิน (Payment Slip) <span style="color:red">*</span></label>
+                     <label style="display:block; margin-bottom:10px; font-weight:600;"><?= __('chk_attach_slip') ?> <span style="color:red">*</span></label>
                      <input type="file" name="slip" accept="image/*" required>
                 </div>
 
-                <button type="submit" class="btn" style="width:100%; margin-top: 20px; font-size: 1.1rem; padding: 18px;">ยืนยันคำสั่งซื้อ</button>
+                <button type="submit" class="btn" style="width:100%; margin-top: 20px; font-size: 1.1rem; padding: 18px;"><?= __('chk_confirm_order') ?></button>
             </form>
 
         </div>
 
         <!-- Order Summary -->
         <div class="order-summary" style="background: #f9f9f9; padding: 30px; height: fit-content;">
-            <h3 style="margin-bottom: 20px;">สรุปคำสั่งซื้อ</h3>
+            <h3 style="margin-bottom: 20px;"><?= __('chk_order_summary') ?></h3>
             
             <div class="summary-items" style="margin-bottom: 20px;">
                 <?php foreach ($cartItems as $item): ?>
@@ -137,15 +143,15 @@ include 'includes/header.php';
             </div>
             
             <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; display:flex; justify-content:space-between; font-size: 0.9rem;">
-                <span>ค่าจัดส่ง (Shipping)</span>
-                <span><?= formatPrice($shippingCost) ?></span>
+                <span><?= __('chk_shipping') ?></span>
+                <span><?= isset($_SESSION['user_id']) ? '<span style="color: #22c55e; font-weight: 600;">' . ($_SESSION['lang'] === 'th' ? 'ฟรี (สมาชิก)' : 'Free (Member)') . '</span>' : formatPrice($shippingCost) ?></span>
             </div>
             
             <div style="border-top: 2px solid #333; padding-top: 20px; margin-top: 10px; font-weight: 700; display:flex; justify-content:space-between; font-size: 1.2rem;">
-                <span>ยอดรวมสุทธิ</span>
+                <span><?= __('chk_total_amount') ?></span>
                 <span><?= formatPrice($total) ?></span>
             </div>
-            <p style="text-align:right; font-size:0.8rem; color:#666; margin-top:5px;">(รวมภาษีมูลค่าเพิ่มแล้ว)</p>
+            <p style="text-align:right; font-size:0.8rem; color:#666; margin-top:5px;"><?= __('chk_vat_included') ?></p>
         </div>
     </div>
 </div>

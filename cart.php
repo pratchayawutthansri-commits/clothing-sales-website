@@ -61,19 +61,19 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
 
 <div class="cart-page">
     <div class="container">
-        <h1>ตะกร้าสินค้า</h1>
+        <h1><?= __('cart_title') ?></h1>
         
         <?php if (empty($cartItems)): ?>
-            <p style="margin-top: 20px;">ตะกร้าของคุณว่างเปล่า <a href="shop.php" style="text-decoration:underline;">เลือกซื้อสินค้า</a></p>
+            <p style="margin-top: 20px;"><?= __('cart_empty') ?> <a href="shop.php" style="text-decoration:underline;"><?= __('cart_continue') ?></a></p>
         <?php else: ?>
             <table class="cart-table">
                 <thead>
                     <tr>
-                        <th>สินค้า</th>
-                        <th>ไซส์</th>
-                        <th>ราคา</th>
-                        <th>จำนวน</th>
-                        <th>รวม</th>
+                        <th><?= __('cart_th_product') ?></th>
+                        <th><?= __('cart_th_size') ?></th>
+                        <th><?= __('cart_th_price') ?></th>
+                        <th><?= __('cart_th_qty') ?></th>
+                        <th><?= __('cart_th_total') ?></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -105,7 +105,7 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
                                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                 <input type="hidden" name="action" value="remove">
                                 <input type="hidden" name="key" value="<?= htmlspecialchars($item['cart_key']) ?>">
-                                <button type="submit" class="remove-btn">ลบ</button>
+                                <button type="submit" class="remove-btn"><?= __('cart_btn_remove') ?></button>
                             </form>
                         </td>
                     </tr>
@@ -115,19 +115,19 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
             
             <div class="cart-summary">
                 <div class="summary-row">
-                    <span>ยอดรวมสินค้า</span>
+                    <span><?= __('cart_subtotal') ?></span>
                     <span>฿<?= number_format($total, 0) ?></span>
                 </div>
                 <div class="summary-row">
-                    <span>ค่าจัดส่ง</span>
-                    <span>คำนวณในขั้นตอนถัดไป</span>
+                    <span><?= __('cart_shipping') ?></span>
+                    <span><?= __('cart_shipping_calc') ?></span>
                 </div>
                 <div class="summary-row summary-total">
-                    <span>ยอดสุทธิ</span>
+                    <span><?= __('cart_th_total') ?></span>
                     <span>฿<?= number_format($total, 0) ?></span>
                 </div>
                 
-                <a href="checkout.php" class="btn" style="width:100%; margin-top:20px; text-align:center; display:block;">ดำเนินการชำระเงิน</a>
+                <a href="checkout.php" class="btn" style="width:100%; margin-top:20px; text-align:center; display:block;"><?= __('cart_checkout') ?></a>
             </div>
         <?php endif; ?>
     </div>

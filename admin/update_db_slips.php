@@ -25,6 +25,7 @@ try {
     echo "<h3>Database Update Complete! <a href='index.php'>Go to Dashboard</a></h3>";
 
 } catch (PDOException $e) {
-    die("Error: " . $e->getMessage());
+    error_log("DB Update Error: " . $e->getMessage());
+    die("Database setup encountered an error. Please check server logs.");
 }
 ?>

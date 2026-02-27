@@ -128,23 +128,23 @@ $featured_products = $stmt->fetchAll();
 <section class="hero">
     <div class="hero-content">
         <h1 style="font-family: 'Outfit', sans-serif; font-weight: 800; letter-spacing: -2px; text-transform: uppercase; font-size: 5rem; line-height: 0.9;">
-            UNFILTERED<br><span style="color: #ff4444;">EXPRESSION.</span>
+            <?= __('hero_title_1') ?><br><span style="color: #ff4444;"><?= __('hero_title_2') ?></span>
         </h1>
         <p style="font-family: 'Kanit', sans-serif; font-weight: 300; font-size: 1.2rem; margin-top: 20px; color: #666;">
-            เสื้อผ้าที่ "ตะโกน" ความเป็นตัวคุณ. ไม่ต้องตามใคร. แค่เป็นตัวเองให้สุด.
+            <?= __('hero_subtitle') ?>
         </p>
-        <a href="shop.php" class="btn" style="background: #000; color: #fff; border-radius: 50px; padding: 15px 40px; font-family: 'Outfit', sans-serif; font-weight: 600; margin-top: 30px;">SHOP THE VIBE</a>
+        <a href="shop.php" class="btn" style="background: #000; color: #fff; border-radius: 50px; padding: 15px 40px; font-family: 'Outfit', sans-serif; font-weight: 600; margin-top: 30px;"><?= mb_strtoupper(__('shop_the_vibe')) ?></a>
     </div>
-    <img src="images/hero_cartoon.jpg" alt="XIVEX Cartoon Mascot" class="hero-image">
+    <img src="images/hero_cartoon_new.png" alt="XIVEX Cartoon Mascot" class="hero-image">
 </section>
 
 <!-- Featured Section -->
 <section class="featured" style="padding: 100px 0;">
     <div class="container">
         <div class="section-header" style="text-align: center; margin-bottom: 40px;">
-            <h2 class="section-title" style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 10px;">New Arrivals</h2>
+            <h2 class="section-title" style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 10px;"><?= __('new_arrivals') ?></h2>
             <div style="margin-top: 10px;">
-                <a href="shop.php" style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem; color: #666; text-decoration: none; border-bottom: 1px solid #ccc;">View All Products</a>
+                <a href="shop.php" style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem; color: #666; text-decoration: none; border-bottom: 1px solid #ccc;"><?= __('view_all_products') ?></a>
             </div>
         </div>
 
@@ -154,14 +154,14 @@ $featured_products = $stmt->fetchAll();
                 <a href="product.php?id=<?= $product['id'] ?>">
                     <div class="product-image-wrapper">
                         <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
-                        <div class="quick-add-btn">View Details</div>
+                        <div class="quick-add-btn"><?= __('view_details') ?></div>
                     </div>
                     <div class="product-info">
                         <div>
                             <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
                             <span class="product-cat"><?= htmlspecialchars($product['category']) ?></span>
                         </div>
-                        <span class="product-price">เริ่มต้น ฿<?= number_format($product['base_price'], 0) ?></span>
+                        <span class="product-price"><?= __('from_price') ?><?= number_format($product['base_price'], 0) ?></span>
                     </div>
                 </a>
             </div>
@@ -173,9 +173,9 @@ $featured_products = $stmt->fetchAll();
 <!-- Promotional Banner -->
 <section class="promo-banner">
     <div class="promo-content">
-        <h2>The Monochrome Series</h2>
-        <p style="margin-bottom:30px; color:#999; font-family: 'Kanit', sans-serif; letter-spacing: 1px;">ความเรียบง่ายที่เหนือระดับ</p>
-        <a href="shop.php?cat=Monochrome" class="btn" style="background: white; color: black; border: none;">Shop Series</a>
+        <h2><?= __('promo_title') ?? 'The Monochrome Series' ?></h2>
+        <p style="margin-bottom:30px; color:#999; font-family: 'Kanit', sans-serif; letter-spacing: 1px;"><?= __('promo_subtitle') ?? 'Elevated Simplicity' ?></p>
+        <a href="shop.php?cat=Monochrome" class="btn" style="background: white; color: black; border: none;"><?= mb_strtoupper(__('shop_series') ?? 'Shop Series') ?></a>
     </div>
 </section>
 

@@ -36,6 +36,7 @@ try {
     echo "<h3>Database Upgrade Complete! <a href='index.php'>Back to Dashboard</a></h3>";
 
 } catch (PDOException $e) {
-    die("Error: " . $e->getMessage());
+    error_log("DB Upgrade Error: " . $e->getMessage());
+    die("Database upgrade encountered an error. Please check server logs.");
 }
 ?>

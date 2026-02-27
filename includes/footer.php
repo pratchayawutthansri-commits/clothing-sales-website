@@ -41,7 +41,7 @@
     </div>
 </footer>
 
-<script src="<?= rtrim($site_url, '/') ?>/js/script.js"></script>
+<script src="<?= defined('SITE_URL') ? rtrim(SITE_URL, '/') : '' ?>/js/script.js"></script>
 <?php include __DIR__ . '/chat_widget.php'; ?>
 </body>
 </html>

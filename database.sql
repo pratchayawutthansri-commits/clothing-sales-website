@@ -85,6 +85,26 @@ CREATE TABLE IF NOT EXISTS order_items (
     FOREIGN KEY (product_id) REFERENCES products (id)
 );
 
+-- Notifications Table (Global Promos & Messages)
+CREATE TABLE IF NOT EXISTS notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) DEFAULT 'promo', -- promo, alert, info
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- User Notifications (Tracking Read Status)
+CREATE TABLE IF NOT EXISTS user_notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    notification_id INT NOT NULL,
+    is_read TINYINT(1) DEFAULT 0,
+    read_at TIMESTAMP NULL DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (notification_id) REFERENCES notifications (id) ON DELETE CASCADE
+);
+
 -- Seed Data for Products (THAI Content)
 INSERT INTO
     products (

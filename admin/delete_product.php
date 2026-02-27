@@ -24,7 +24,7 @@ if ($id > 0) {
         $count = $stmtCheck->fetchColumn();
 
         if ($count > 0) {
-            header("Location: products.php?error=" . urlencode("ไม่สามารถลบสินค้าได้ เนื่องจากมีประวัติการสั่งซื้อ (มีอยู่ใน $count รายการ)"));
+            header("Location: products.php?error=" . urlencode("Cannot delete product: It is associated with $count existing order(s)"));
             exit;
         }
 
@@ -42,7 +42,7 @@ if ($id > 0) {
             unlink("../" . $img);
         }
 
-        header("Location: products.php?success=" . urlencode("ลบสินค้าเรียบร้อยแล้ว"));
+        header("Location: products.php?success=" . urlencode("Product deleted successfully"));
         exit;
 
     } catch (Exception $e) {

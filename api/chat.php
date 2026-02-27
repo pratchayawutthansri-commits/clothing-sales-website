@@ -7,12 +7,28 @@ require_once '../includes/db.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-$session_id = session_id();
+
+// Generate or retrieve persistent guest chat session ID (store in cookie for consistency across visits)
+if (!isset($_COOKIE['chat_session_id'])) {
+    $guest_session_id = session_id() . '_' . uniqid();
+    setcookie('chat_session_id', $guest_session_id, time() + (86400 * 30), "/"); // 30 days expiry
+} else {
+    $guest_session_id = $_COOKIE['chat_session_id'];
+}
+
+$isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 
 // Handle Request
 $action = $_GET['action'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // CSRF Protection: Require custom header (browsers block this cross-origin without CORS preflight)
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+        http_response_code(403);
+        echo json_encode(['status' => 'error', 'message' => 'Forbidden: Invalid request']);
+        exit;
+    }
+
     $input = json_decode(file_get_contents('php://input'), true);
     if (!isset($input['message']) || empty(trim($input['message']))) {
         echo json_encode(['status' => 'error', 'message' => 'Empty message']);
@@ -37,10 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
-
     // For admin, we need user_session_id from post data to reply to specific user
-    $targetSession = $session_id;
+    $targetSession = $guest_session_id; // Default for guests
     if ($isAdmin && isset($input['target_session'])) {
         $targetSession = $input['target_session'];
     }
@@ -53,11 +67,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($action === 'fetch') {
-    // If Admin, fetching logic is different (fetched via admin panel usually), 
-    // but here we might be fetching for the current user (guest/customer)
+    // If guest is fetching, use their persistent session ID
     $stmt = $pdo->prepare("SELECT * FROM chat_messages WHERE session_id = ? ORDER BY created_at ASC");
-    $stmt->execute([$session_id]);
+    $stmt->execute([$guest_session_id]);
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Sanitize output to prevent XSS
+    foreach ($messages as &$msg) {
+        $msg['message'] = htmlspecialchars($msg['message'], ENT_QUOTES, 'UTF-8');
+    }
+    unset($msg);
 
     echo json_encode(['status' => 'success', 'messages' => $messages]);
     exit;

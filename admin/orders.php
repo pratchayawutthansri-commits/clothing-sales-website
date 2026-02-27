@@ -30,7 +30,7 @@ $toShipCount = $stmtToShip->fetchColumn();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายการคำสั่งซื้อ - Xivex Admin</title>
+    <title>Orders - Xivex Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
     <style>
@@ -42,15 +42,111 @@ $toShipCount = $stmtToShip->fetchColumn();
         .btn-view { padding: 6px 15px; background: #000; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: 0.3s; }
         .btn-view:hover { background: #444; }
 
-        /* Stat Cards (order-specific layout) */
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-decoration: none; color: inherit; }
-        .stat-info h3 { margin: 0; font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-info p { margin: 5px 0 0; font-size: 2rem; font-weight: bold; color: #333; }
-        .stat-icon { font-size: 2rem; opacity: 0.2; }
-        
-        .card-orange { border-left: 5px solid #fd7e14; }
-        .card-blue { border-left: 5px solid #007bff; }
+        /* ─── Modern Stat Cards ─── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+        .ostat-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 32px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 120px;
+        }
+        .ostat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        .ostat-card::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 180px;
+            height: 180px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            transition: transform 0.5s;
+        }
+        .ostat-card:hover::before {
+            transform: scale(1.3);
+        }
+        .ostat-card::after {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            left: -5%;
+            width: 140px;
+            height: 140px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .ostat-card.card-pending {
+            background: linear-gradient(135deg, #f97316, #fb923c, #fdba74);
+        }
+        .ostat-card.card-toship {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
+        }
+
+        .ostat-info {
+            position: relative;
+            z-index: 1;
+        }
+        .ostat-info h3 {
+            margin: 0;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.85;
+        }
+        .ostat-info .ostat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-top: 6px;
+            font-family: 'Outfit', sans-serif;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .ostat-info .ostat-sub {
+            font-size: 0.78rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .ostat-icon {
+            position: relative;
+            z-index: 1;
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s;
+        }
+        .ostat-card:hover .ostat-icon {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(5deg) scale(1.1);
+        }
+        .ostat-icon svg {
+            width: 28px;
+            height: 28px;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -59,45 +155,51 @@ $toShipCount = $stmtToShip->fetchColumn();
 
 <div class="content">
     <div class="header">
-        <h1>รายการคำสั่งซื้อ</h1>
+        <h1><?= __('ao_title') ?></h1>
     </div>
     
     <div class="stats-grid">
-        <a href="orders.php?status=pending" class="stat-card card-orange">
-            <div class="stat-info">
-                <h3>รอตรวจสอบ (Pending)</h3>
-                <p><?= $pendingOrders ?></p>
+        <a href="orders.php?status=pending" class="ostat-card card-pending">
+            <div class="ostat-info">
+                <h3><?= __('ao_pending') ?></h3>
+                <div class="ostat-number"><?= $pendingOrders ?></div>
+                <div class="ostat-sub"><?= $_SESSION['lang'] === 'th' ? 'คำสั่งซื้อรอตรวจสอบ' : 'Orders awaiting review' ?></div>
             </div>
-            <div class="stat-icon">🕒</div>
+            <div class="ostat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
         </a>
-        <a href="orders.php?status=paid" class="stat-card card-blue">
-            <div class="stat-info">
-                <h3>ต้องจัดส่ง (To Ship)</h3>
-                <p><?= $toShipCount ?></p>
+        <a href="orders.php?status=paid" class="ostat-card card-toship">
+            <div class="ostat-info">
+                <h3><?= __('ao_to_ship') ?></h3>
+                <div class="ostat-number"><?= $toShipCount ?></div>
+                <div class="ostat-sub"><?= $_SESSION['lang'] === 'th' ? 'ชำระแล้ว พร้อมจัดส่ง' : 'Paid & ready to ship' ?></div>
             </div>
-            <div class="stat-icon">📦</div>
+            <div class="ostat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            </div>
         </a>
     </div>
     
     <div style="margin-bottom: 20px;">
-        <a href="orders.php" class="btn" style="background: #666;">ทั้งหมด</a>
-        <a href="orders.php?status=pending" class="btn" style="background: #fd7e14;">รอชำระ/ตรวจ</a>
-        <a href="orders.php?status=paid" class="btn" style="background: #28a745;">รอส่ง</a>
-        <a href="orders.php?status=shipped" class="btn" style="background: #007bff;">ส่งแล้ว</a>
-        <a href="orders.php?status=completed" class="btn" style="background: #198754;">สำเร็จ</a>
-        <a href="orders.php?status=cancelled" class="btn" style="background: #dc3545;">ยกเลิก</a>
+        <a href="orders.php" class="btn" style="background: #666;"><?= __('ao_filter_all') ?></a>
+        <a href="orders.php?status=pending" class="btn" style="background: #fd7e14;"><?= __('ao_filter_pending') ?></a>
+        <a href="orders.php?status=paid" class="btn" style="background: #28a745;"><?= __('ao_filter_paid') ?></a>
+        <a href="orders.php?status=shipped" class="btn" style="background: #007bff;"><?= __('ao_filter_shipped') ?></a>
+        <a href="orders.php?status=completed" class="btn" style="background: #198754;"><?= __('ao_filter_completed') ?></a>
+        <a href="orders.php?status=cancelled" class="btn" style="background: #dc3545;"><?= __('ao_filter_cancelled') ?></a>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>Order ID</th>
-                <th>วันที่</th>
-                <th>ลูกค้า</th>
-                <th>ยอดรวม</th>
-                <th>วิธีชำระ</th>
-                <th>สถานะ</th>
-                <th>จัดการ</th>
+                <th><?= __('ao_th_order_id') ?></th>
+                <th><?= __('ao_th_date') ?></th>
+                <th><?= __('ao_th_customer') ?></th>
+                <th><?= __('ao_th_total') ?></th>
+                <th><?= __('ao_th_payment') ?></th>
+                <th><?= __('ao_th_status') ?></th>
+                <th><?= __('ao_th_action') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -118,15 +220,15 @@ $toShipCount = $stmtToShip->fetchColumn();
                         </span>
                     </td>
                     <td>
-                        <a href="order_details.php?id=<?= $order['id'] ?>" class="btn-view" style="margin-right: 5px;">ดูรายละเอียด</a>
-                        <a href="print_label.php?id=<?= $order['id'] ?>" target="_blank" class="btn-view" style="background: #6c757d;">พิมพ์ใบปะหน้า</a>
+                        <a href="order_details.php?id=<?= $order['id'] ?>" class="btn-view" style="margin-right: 5px;"><?= __('ao_btn_view') ?></a>
+                        <a href="print_label.php?id=<?= $order['id'] ?>" target="_blank" class="btn-view" style="background: #6c757d;"><?= __('ao_btn_print') ?></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
                     <td colspan="7" style="text-align: center; color: #999; padding: 50px;">
-                        ไม่พบข้อมูลคำสั่งซื้อ
+                        <?= __('ao_no_orders') ?>
                     </td>
                 </tr>
             <?php endif; ?>

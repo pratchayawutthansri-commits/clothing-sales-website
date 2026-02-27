@@ -16,10 +16,10 @@ if ($category) {
 
 // Categories for Filter (Matched with DB)
 $categories = [
-    'Tops' => 'เสื้อ (Tops)', 
-    'Bottoms' => 'กางเกง (Bottoms)', 
-    'Outerwear' => 'เสื้อคลุม (Outerwear)',
-    'Accessories' => 'เครื่องประดับ'
+    'Tops' => 'Tops', 
+    'Bottoms' => 'Bottoms', 
+    'Outerwear' => 'Outerwear',
+    'Accessories' => 'Accessories'
 ];
 
 // Logic: If 'new' is requested, we might want to limit to recent items or specific categories.
@@ -160,24 +160,24 @@ $products = $stmt->fetchAll();
 <?php if ($isNew): ?>
     <div class="new-drop-banner">
         <div class="banner-content">
-            <div class="banner-badge">Fresh Drop</div>
-            <h1 class="banner-title">HYPED<br>ESSENTIALS</h1>
-            <p class="banner-subtitle">Streetwear for the New Generation / Limited Stock</p>
+            <div class="banner-badge"><?= mb_strtoupper(__('shop_fresh_drop')) ?></div>
+            <h1 class="banner-title"><?= __('shop_hyped_essentials') ?></h1>
+            <p class="banner-subtitle"><?= __('shop_sub_banner') ?></p>
         </div>
     </div>
 <?php else: ?>
     <div class="page-header" style="text-align: center; padding: 60px 0;">
         <div class="container">
             <h1 class="page-title" style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 10px;">
-                <?= $category ? htmlspecialchars($category) : 'All Products' ?>
+                <?= $category ? htmlspecialchars($category) : __('shop_all_products_title') ?>
             </h1>
-            <p style="color: #666; font-family: 'Kanit', sans-serif; font-weight: 300;">Curated for the modern urban lifestyle</p>
+            <p style="color: #666; font-family: 'Kanit', sans-serif; font-weight: 300;"><?= __('shop_subtitle') ?></p>
         </div>
     </div>
     
     <div class="container">
         <div class="filter-bar">
-            <a href="shop.php" class="filter-link <?= !$category ? 'active' : '' ?>">All</a>
+            <a href="shop.php" class="filter-link <?= !$category ? 'active' : '' ?>"><?= __('shop_all_filter') ?></a>
             <?php foreach ($categories as $dbValue => $displayName): ?>
                 <a href="shop.php?cat=<?= urlencode($dbValue) ?>" class="filter-link <?= $category === $dbValue ? 'active' : '' ?>">
                     <?= htmlspecialchars($dbValue) /* Use English Key for cleaner URL/Display or displayName if preferred */ ?>
@@ -196,26 +196,26 @@ $products = $stmt->fetchAll();
                     <div class="product-image-wrapper" style="position: relative;">
                         <!-- Show NEW badge for the first 3 items or if specifically looking at New Arrivals -->
                         <?php if ($index < 3 || $isNew): ?>
-                            <span class="badge-new">NEW</span>
+                            <span class="badge-new"><?= __('badge_new') ?></span>
                         <?php endif; ?>
                         
                         <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
                         
-                        <div class="quick-add-btn">View Details</div>
+                        <div class="quick-add-btn"><?= __('view_details') ?></div>
                     </div>
                     <div class="product-info">
                         <div>
                             <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
                             <span class="product-cat"><?= htmlspecialchars($product['category']) ?></span>
                         </div>
-                        <span class="product-price">เริ่มต้น ฿<?= number_format($product['base_price'], 0) ?></span>
+                        <span class="product-price"><?= __('from_price') ?><?= number_format($product['base_price'], 0) ?></span>
                     </div>
                 </a>
             </div>
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <p style="text-align:center; padding: 50px;">ไม่พบสินค้าในหมวดหมู่นี้</p>
+        <p style="text-align:center; padding: 50px;"><?= __('shop_no_products') ?></p>
     <?php endif; ?>
 </div>
 

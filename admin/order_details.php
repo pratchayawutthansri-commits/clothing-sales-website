@@ -11,7 +11,7 @@ $stmt->execute([$id]);
 $order = $stmt->fetch();
 
 if (!$order) {
-    die("ไม่พบคำสั่งซื้อ");
+    die("Order not found");
 }
 
 // Fetch Items
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายละเอียดคำสั่งซื้อ #<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?> - Xivex Admin</title>
+    <title>Order Details #<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?> - Xivex Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
     <style>
@@ -116,48 +116,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
 <?php include 'includes/sidebar.php'; ?>
 
 <div class="content">
-    <a href="orders.php" class="btn-back">← กลับไปหน้ารายการ</a>
+    <a href="orders.php" class="btn-back"><?= __('aod_back') ?></a>
 
     <div class="box">
         <div class="order-header">
-            <h1>คำสั่งซื้อ #<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?></h1>
+            <h1><?= __('aod_order') ?> #<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?></h1>
         </div>
         <div class="actions">
-            <h2>จัดการคำสั่งซื้อ</h2>
+            <h2><?= __('aod_manage') ?></h2>
             <form method="POST">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['admin_csrf_token'] ?? '' ?>">
                 
                 <div class="form-group">
-                    <label>เลขพัสดุ (Tracking Number)</label>
-                    <input type="text" name="tracking_number" value="<?= htmlspecialchars($order['tracking_number'] ?? '') ?>" placeholder="เช่น TH12345678" style="width:100%; padding:10px; border:1px solid #ddd; margin-bottom:15px;">
+                    <label><?= __('aod_tracking') ?></label>
+                    <input type="text" name="tracking_number" value="<?= htmlspecialchars($order['tracking_number'] ?? '') ?>" placeholder="<?= __('aod_tracking_placeholder') ?>" style="width:100%; padding:10px; border:1px solid #ddd; margin-bottom:15px;">
                 </div>
 
                 <div class="form-group">
-                    <label>สถานะคำสั่งซื้อ</label>
+                    <label><?= __('aod_status') ?></label>
                     <select name="status" style="width:100%; padding: 10px; margin-bottom: 20px;">
-                        <option value="pending" <?= $order['status'] == 'pending' ? 'selected' : '' ?>>รอชำระเงิน / ตรวจสอบ (Pending)</option>
-                        <option value="paid" <?= $order['status'] == 'paid' ? 'selected' : '' ?>>ชำระเงินแล้ว / รอส่ง (Paid)</option>
-                        <option value="shipped" <?= $order['status'] == 'shipped' ? 'selected' : '' ?>>จัดส่งแล้ว (Shipped)</option>
-                        <option value="completed" <?= $order['status'] == 'completed' ? 'selected' : '' ?>>ลูกค้าได้รับของแล้ว (Completed)</option>
+                        <option value="pending" <?= $order['status'] == 'pending' ? 'selected' : '' ?>><?= __('aod_status_pending') ?></option>
+                        <option value="paid" <?= $order['status'] == 'paid' ? 'selected' : '' ?>><?= __('aod_status_paid') ?></option>
+                        <option value="shipped" <?= $order['status'] == 'shipped' ? 'selected' : '' ?>><?= __('aod_status_shipped') ?></option>
+                        <option value="completed" <?= $order['status'] == 'completed' ? 'selected' : '' ?>><?= __('aod_status_completed') ?></option>
                     </select>
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <button type="submit" name="update_order" class="btn">อัปเดตข้อมูล</button>
-                        <a href="print_label.php?id=<?= $order['id'] ?>" target="_blank" class="btn btn-secondary">พิมพ์ใบปะหน้า</a>
+                        <button type="submit" name="update_order" class="btn"><?= __('aod_btn_update') ?></button>
+                        <a href="print_label.php?id=<?= $order['id'] ?>" target="_blank" class="btn btn-secondary"><?= __('aod_btn_print') ?></a>
                     </div>
                 </div>
             </form>
 
             <?php if ($order['status'] != 'cancelled' && $order['status'] != 'completed'): ?>
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-                <h3 style="color: #dc3545; font-size: 1rem; margin-top: 0;">Danger Zone</h3>
-                <form method="POST" onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะยกเลิกคำสั่งซื้อนี้?');">
+                <h3 style="color: #dc3545; font-size: 1rem; margin-top: 0;"><?= __('aod_danger') ?></h3>
+                <form method="POST" onsubmit="return confirm('<?= __('aod_cancel_confirm') ?>');">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['admin_csrf_token'] ?? '' ?>">
                     <input type="hidden" name="status" value="cancelled">
                     <input type="hidden" name="tracking_number" value="<?= htmlspecialchars($order['tracking_number'] ?? '') ?>">
-                    <button type="submit" name="update_order" class="btn" style="background: #dc3545;">ยกเลิกคำสั่งซื้อ (Cancel Order)</button>
+                    <button type="submit" name="update_order" class="btn" style="background: #dc3545;"><?= __('aod_cancel_order') ?></button>
                 </form>
             </div>
             <?php endif; ?>
@@ -165,21 +165,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
 
         <div class="info-grid">
             <div class="info-group">
-                <h3>ข้อมูลลูกค้า</h3>
-                <p><b>ชื่อ:</b> <?= htmlspecialchars($order['customer_name']) ?></p>
-                <p><b>อีเมล:</b> <?= htmlspecialchars($order['email']) ?></p>
-                <p><b>เบอร์โทร:</b> <?= htmlspecialchars($order['phone']) ?></p>
-                <p><b>ที่อยู่จัดส่ง:</b> <?= nl2br(htmlspecialchars($order['address'])) ?></p>
+                <h3><?= __('aod_customer_info') ?></h3>
+                <p><b><?= __('aod_name') ?></b> <?= htmlspecialchars($order['customer_name']) ?></p>
+                <p><b><?= __('aod_email') ?></b> <?= htmlspecialchars($order['email']) ?></p>
+                <p><b><?= __('aod_phone') ?></b> <?= htmlspecialchars($order['phone']) ?></p>
+                <p><b><?= __('aod_address') ?></b> <?= nl2br(htmlspecialchars($order['address'])) ?></p>
             </div>
             <div class="info-group">
-                <h3>ข้อมูลการชำระเงิน</h3>
-                <p><b>วันที่สั่งซื้อ:</b> <?= date('d/m/Y H:i', strtotime($order['order_date'])) ?></p>
-                <p><b>วิธีชำระเงิน:</b> <?= strtoupper($order['payment_method']) ?></p>
-                <p><b>ยอดรวมทั้งสิ้น:</b> <span style="font-size: 1.5rem; font-weight: bold;">฿<?= number_format($order['total_price'], 0) ?></span></p>
+                <h3><?= __('aod_payment_info') ?></h3>
+                <p><b><?= __('aod_order_date') ?></b> <?= date('d/m/Y H:i', strtotime($order['order_date'])) ?></p>
+                <p><b><?= __('aod_method') ?></b> <?= strtoupper($order['payment_method']) ?></p>
+                <p><b><?= __('aod_total') ?></b> <span style="font-size: 1.5rem; font-weight: bold;">฿<?= number_format($order['total_price'], 0) ?></span></p>
                 
                 <?php if ($order['payment_slip']): ?>
                     <div style="margin-top: 15px;">
-                        <p><b>หลักฐานการโอนเงิน:</b></p>
+                        <p><b><?= __('aod_slip') ?></b></p>
                         <a href="../<?= htmlspecialchars($order['payment_slip']) ?>" target="_blank">
                             <img src="../<?= htmlspecialchars($order['payment_slip']) ?>" style="max-width: 200px; border-radius: 4px; border: 1px solid #ddd;">
                         </a>
@@ -188,15 +188,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
             </div>
         </div>
 
-        <h3>รายการสินค้า</h3>
+        <h3><?= __('aod_items') ?></h3>
         <table class="table-items">
             <thead>
                 <tr>
-                    <th>สินค้า</th>
-                    <th>ไซส์</th>
-                    <th>ราคาต่อชิ้น</th>
-                    <th>จำนวน</th>
-                    <th>รวม</th>
+                    <th><?= __('aod_th_product') ?></th>
+                    <th><?= __('aod_th_size') ?></th>
+                    <th><?= __('aod_th_price') ?></th>
+                    <th><?= __('aod_th_qty') ?></th>
+                    <th><?= __('aod_th_total') ?></th>
                 </tr>
             </thead>
             <tbody>

@@ -14,12 +14,17 @@ if (!isset($_POST['csrf_token']) || !isset($_SESSION['admin_csrf_token']) || !ha
 }
 
 $id = (int)$_POST['id'];
-$name = $_POST['name'];
-$category = $_POST['category'];
+$name = trim($_POST['name']);
+$category = trim($_POST['category']);
 $description = trim($_POST['description']);
-$base_price = $_POST['base_price'];
+$base_price = (float)$_POST['base_price'];
 $badge = $_POST['badge'] ?? null;
 $is_visible = isset($_POST['is_visible']) ? 1 : 0;
+
+if (empty($name) || $base_price <= 0) {
+    header("Location: edit_product.php?id=$id&error=" . urlencode("Name and price are required (price must be > 0)"));
+    exit;
+}
 
 try {
     $pdo->beginTransaction();
@@ -39,10 +44,10 @@ try {
         $mimeType = $finfo->file($_FILES['image']['tmp_name']);
         
         if (!in_array($ext, $allowed) || !in_array($mimeType, $allowedMimes)) {
-            throw new Exception("ประเภทไฟล์ภาพไม่ถูกต้อง (อนุญาต: JPG, PNG, WebP)");
+            throw new Exception("Invalid image type (Allowed: JPG, PNG, WebP)");
         }
         if ($_FILES['image']['size'] > $maxSize) {
-            throw new Exception("ไฟล์ภาพใหญ่เกินไป (สูงสุด 5MB)");
+            throw new Exception("Image is too large (Maximum: 5MB)");
         }
         
         // Get old image to delete
@@ -82,10 +87,10 @@ try {
         
         for ($i = 0; $i < count($ids); $i++) {
             $stmtUpdateVar->execute([
-                $sizes[$i],
-                $prices[$i],
-                $stocks[$i],
-                $ids[$i],
+                strtoupper($sizes[$i]),
+                (float)($prices[$i] ?? 0),
+                max(0, (int)($stocks[$i] ?? 0)),
+                (int)$ids[$i],
                 $id
             ]);
         }
@@ -101,18 +106,22 @@ try {
         
         for ($i = 0; $i < count($newSizes); $i++) {
             if (!empty($newSizes[$i])) {
+                $vPrice = (float)($newPrices[$i] ?? 0);
+                $vStock = max(0, (int)($newStocks[$i] ?? 0));
+                if ($vPrice <= 0) continue;
+                
                 $stmtInsertVar->execute([
                     $id,
-                    $newSizes[$i],
-                    $newPrices[$i],
-                    $newStocks[$i]
+                    strtoupper($newSizes[$i]),
+                    $vPrice,
+                    $vStock
                 ]);
             }
         }
     }
 
     $pdo->commit();
-    header("Location: products.php?success=แก้ไขสินค้าเรียบร้อยแล้ว");
+    header("Location: products.php?success=Product updated successfully");
     exit;
 
 } catch (Exception $e) {

@@ -49,13 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 2. Insert Product
         $pdo->beginTransaction();
 
-        $base_price = $_POST['base_price'];
+        $base_price = (float)$_POST['base_price'];
         $badge = $_POST['badge'] ?? null;
         $is_visible = isset($_POST['is_visible']) ? 1 : 0;
 
         // Validate Inputs
-        if (empty($_POST['name']) || empty($base_price)) {
-            die("กรุณากรอกข้อมูลที่จำเป็นให้ครบ");
+        if (empty($_POST['name']) || $base_price <= 0) {
+            die("Error: Please provide all required information (price must be > 0)");
         }
 
         $sql = "INSERT INTO products (name, category, description, base_price, image, badge, is_visible) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -80,11 +80,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         for ($i = 0; $i < count($sizes); $i++) {
             if (!empty($sizes[$i])) {
+                $variantPrice = (float)($prices[$i] ?? 0);
+                $variantStock = max(0, (int)($stocks[$i] ?? 0));
+                if ($variantPrice <= 0) continue; // Skip invalid variants
+                
                 $stmtV->execute([
                     $product_id,
                     strtoupper($sizes[$i]),
-                    $prices[$i],
-                    $stocks[$i]
+                    $variantPrice,
+                    $variantStock
                 ]);
             }
         }
@@ -95,7 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } catch (Exception $e) {
         $pdo->rollBack();
-        die("Error: " . $e->getMessage());
+        error_log("Product Process Error: " . $e->getMessage());
+        die("Error processing your request. Please try again.");
     }
 } else {
     header("Location: index.php");

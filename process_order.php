@@ -18,7 +18,7 @@ $address = trim($_POST['address']);
 $payment_method = $_POST['payment_method'];
 
 if (empty($name) || empty($email) || empty($phone) || empty($address)) {
-    die("กรุณากรอกข้อมูลให้ครบถ้วน");
+    die("Please fill in all required fields.");
 }
 
 // 2. Calculate Total & Prepare Items
@@ -46,7 +46,7 @@ try {
         if ($item) {
             // STOCK CHECK
             if ($item['stock'] < $qty) {
-                throw new Exception("สินค้า {$item['name']} (ไซส์ {$item['size']}) มีไม่พอ (เหลือ {$item['stock']} ชิ้น)");
+                throw new Exception("Product {$item['name']} (Size {$item['size']}) is out of stock (Only {$item['stock']} left)");
             }
 
             $subtotal = $item['price'] * $qty;
@@ -76,10 +76,10 @@ try {
         $mimeType = $finfo->file($_FILES['slip']['tmp_name']);
         
         if (!in_array($ext, $allowed) || !in_array($mimeType, $allowedMimes)) {
-            throw new Exception("ประเภทไฟล์ไม่ถูกต้อง (อนุญาต: JPG, PNG, GIF เท่านั้น)");
+            throw new Exception("Invalid file type (Allowed: JPG, PNG, GIF)");
         }
         if ($_FILES['slip']['size'] > $maxSize) {
-            throw new Exception("ไฟล์ใหญ่เกินไป (สูงสุด 5MB)");
+            throw new Exception("File is too large (Max 5MB)");
         }
         
         $uploadDir = 'uploads/slips/';
@@ -91,18 +91,25 @@ try {
         if (move_uploaded_file($_FILES['slip']['tmp_name'], $dest)) {
             $slipPath = $dest;
         } else {
-            throw new Exception("อัปโหลดสลิปไม่สำเร็จ");
+            throw new Exception("Failed to upload payment slip");
         }
     }
 
     // 4. Add Shipping Cost
     $stmtShipping = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'shipping_cost'");
     $shippingCost = (float)($stmtShipping->fetchColumn() ?: 50);
+    
+    // Free shipping for members
+    if (isset($_SESSION['user_id'])) {
+        $shippingCost = 0;
+    }
+    
     $total_price += $shippingCost;
 
     // 5. Insert Order
-    $stmtOrder = $pdo->prepare("INSERT INTO orders (customer_name, email, phone, address, total_price, payment_method, payment_slip, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')");
-    $stmtOrder->execute([$name, $email, $phone, $address, $total_price, $payment_method, $slipPath]);
+    $user_id = $_SESSION['user_id'] ?? null;
+    $stmtOrder = $pdo->prepare("INSERT INTO orders (user_id, customer_name, email, phone, address, total_price, payment_method, payment_slip, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+    $stmtOrder->execute([$user_id, $name, $email, $phone, $address, $total_price, $payment_method, $slipPath]);
     $order_id = $pdo->lastInsertId();
 
     // 4. Insert Order Items
@@ -136,9 +143,9 @@ try {
     $pdo->rollBack();
     error_log("Order Error: " . $e->getMessage());
     // Show stock-related messages directly; hide technical errors
-    $userMessage = (strpos($e->getMessage(), 'สินค้า') !== false)
+    $userMessage = (strpos($e->getMessage(), 'Product') !== false || strpos($e->getMessage(), 'File') !== false || strpos($e->getMessage(), 'Invalid') !== false)
         ? $e->getMessage()
-        : "เกิดข้อผิดพลาดในการสั่งซื้อ กรุณาลองใหม่อีกครั้ง";
+        : "An error occurred while processing your order. Please try again.";
     die($userMessage);
 }
 ?>
