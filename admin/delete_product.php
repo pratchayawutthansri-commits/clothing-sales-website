@@ -46,7 +46,8 @@ if ($id > 0) {
         exit;
 
     } catch (Exception $e) {
-        header("Location: products.php?error=" . urlencode("Error: " . $e->getMessage()));
+        error_log("Delete product error: " . $e->getMessage());
+        header("Location: products.php?error=" . urlencode("An error occurred while deleting the product. Please try again."));
         exit;
     }
 } else {

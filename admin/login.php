@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['admin_login_attempts'] = [];
             $_SESSION['is_admin'] = true;
             $_SESSION['admin_id'] = $user['id'];
+            $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32)); // Regenerate CSRF token
             session_regenerate_id(true); 
             header("Location: index.php");
             exit;
@@ -59,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xivex Admin Login</title>
+    <title><?= __('al_title') ?> - Xivex</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -105,21 +106,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="login-box">
-        <h2>Xivex Admin Login</h2>
+        <h2><?= __('al_title') ?></h2>
         <?php if ($error): ?>
             <div class="error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         <form method="POST">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['admin_csrf_token'] ?>">
             <div class="form-group">
-                <label>Username</label>
+                <label><?= __('al_username') ?></label>
                 <input type="text" name="username" required autofocus>
             </div>
             <div class="form-group">
-                <label>Password</label>
+                <label><?= __('al_password') ?></label>
                 <input type="password" name="password" required>
             </div>
-            <button type="submit">Login</button>
+            <button type="submit"><?= __('al_btn_login') ?></button>
         </form>
     </div>
 </body>

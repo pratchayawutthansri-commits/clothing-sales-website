@@ -229,6 +229,62 @@ return [
     'ap_msg_success' => 'Action completed successfully',
     'ap_msg_delete_confirm' => 'Are you sure you want to delete this product? All data including stock will be lost.',
 
+    // Admin Add Product
+    'aap_title' => 'Add New Product',
+    'aap_name' => 'Product Name',
+    'aap_name_ph' => 'e.g. Oversized Black T-Shirt',
+    'aap_badge' => 'Badge',
+    'aap_badge_ph' => 'e.g. New Arrival, Sale, Best Seller',
+    'aap_visible' => 'Visible',
+    'aap_category' => 'Category',
+    'aap_desc' => 'Product Description',
+    'aap_desc_ph' => 'Description...',
+    'aap_base_price' => 'Base Price / Main Price (THB)',
+    'aap_main_image' => 'Main Image',
+    'aap_variants' => 'Product Variants (Optional)',
+    'aap_var_size' => 'Size (e.g. S)',
+    'aap_var_price' => 'Price',
+    'aap_var_stock' => 'Stock',
+    'aap_add_variant' => '+ Add Variant',
+    'aap_btn_save' => 'Save Product',
+
+    // Admin Edit Product
+    'aep_title' => 'Edit Product',
+    'aep_image_replace' => 'Main Image (Upload new to replace)',
+    'aep_current_image' => 'Current Image:',
+    'aep_add_new_variant' => '+ Add New Variant',
+    'aep_btn_save' => 'Save Changes',
+
+    // Admin Settings
+    'as_title' => 'Shop Settings',
+    'as_bank_info' => 'Bank Info',
+    'as_bank_name' => 'Bank Name',
+    'as_acc_number' => 'Account Number',
+    'as_acc_name' => 'Account Name',
+    'as_shipping' => 'Shipping',
+    'as_shipping_cost' => 'Shipping Cost (THB)',
+    'as_btn_save' => 'Save Shop Settings',
+    'as_saved' => 'Shop settings saved successfully',
+
+    // Admin Login
+    'al_title' => 'Admin Login',
+    'al_username' => 'Username',
+    'al_password' => 'Password',
+    'al_btn_login' => 'Login',
+
+    // Checkout Shipping
+    'chk_free_member' => 'Free (Member)',
+
+    // Notification Page Inline
+    'notif_unread_msg' => 'You have unread messages',
+    'notif_items' => 'items',
+    'notif_all_read' => 'All messages have been read ✓',
+    'notif_empty_desc' => 'When the store has promotions or news, they will appear here',
+    'notif_just_now' => 'Just now',
+    'notif_min_ago' => ' min ago',
+    'notif_hours_ago' => ' hours ago',
+    'notif_days_ago' => ' days ago',
+
     // Admin Order Details
     'aod_back' => '&larr; Back to Orders',
     'aod_order' => 'Order',

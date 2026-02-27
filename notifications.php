@@ -12,9 +12,14 @@ $user_id = $_SESSION['user_id'];
 if (isset($_GET['view']) && is_numeric($_GET['view'])) {
     $notification_id = (int)$_GET['view'];
     
-    // Mark as read
-    $stmtMarkRead = $pdo->prepare("UPDATE user_notifications SET is_read = 1, read_at = CURRENT_TIMESTAMP WHERE user_id = ? AND notification_id = ? AND is_read = 0");
-    $stmtMarkRead->execute([$user_id, $notification_id]);
+    // Verify notification belongs to this user before marking as read
+    $stmtVerify = $pdo->prepare("SELECT COUNT(*) FROM user_notifications WHERE user_id = ? AND notification_id = ? AND is_read = 0");
+    $stmtVerify->execute([$user_id, $notification_id]);
+    
+    if ($stmtVerify->fetchColumn() > 0) {
+        $stmtMarkRead = $pdo->prepare("UPDATE user_notifications SET is_read = 1, read_at = CURRENT_TIMESTAMP WHERE user_id = ? AND notification_id = ?");
+        $stmtMarkRead->execute([$user_id, $notification_id]);
+    }
     
     redirect('notifications.php');
 }

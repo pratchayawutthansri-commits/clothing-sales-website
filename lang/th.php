@@ -227,6 +227,62 @@ return [
     'ap_msg_success' => 'ดำเนินการสำเร็จ',
     'ap_msg_delete_confirm' => 'คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้? ข้อมูลทั้งหมดรวมถึงสต็อกสินค้าจะถูกลบออก',
 
+    // Admin Add Product
+    'aap_title' => 'เพิ่มสินค้าใหม่',
+    'aap_name' => 'ชื่อสินค้า',
+    'aap_name_ph' => 'เช่น เสื้อยืดโอเวอร์ไซส์ สีดำ',
+    'aap_badge' => 'ป้ายกำกับ',
+    'aap_badge_ph' => 'เช่น New Arrival, Sale, Best Seller',
+    'aap_visible' => 'แสดงบนเว็บ',
+    'aap_category' => 'หมวดหมู่',
+    'aap_desc' => 'รายละเอียดสินค้า',
+    'aap_desc_ph' => 'รายละเอียด...',
+    'aap_base_price' => 'ราคาเริ่มต้น / ราคาหลัก (บาท)',
+    'aap_main_image' => 'รูปภาพหลัก',
+    'aap_variants' => 'ตัวเลือกสินค้า (ถ้ามี)',
+    'aap_var_size' => 'ไซส์ (เช่น S, L)',
+    'aap_var_price' => 'ราคา',
+    'aap_var_stock' => 'จำนวนสต็อก',
+    'aap_add_variant' => '+ เพิ่มตัวเลือก',
+    'aap_btn_save' => 'บันทึกสินค้า',
+
+    // Admin Edit Product
+    'aep_title' => 'แก้ไขสินค้า',
+    'aep_image_replace' => 'รูปภาพหลัก (อัปโหลดใหม่เพื่อเปลี่ยน)',
+    'aep_current_image' => 'รูปปัจจุบัน:',
+    'aep_add_new_variant' => '+ เพิ่มตัวเลือกใหม่',
+    'aep_btn_save' => 'บันทึกการเปลี่ยนแปลง',
+
+    // Admin Settings
+    'as_title' => 'ตั้งค่าร้านค้า',
+    'as_bank_info' => 'ข้อมูลธนาคาร',
+    'as_bank_name' => 'ชื่อธนาคาร',
+    'as_acc_number' => 'เลขที่บัญชี',
+    'as_acc_name' => 'ชื่อบัญชี',
+    'as_shipping' => 'การจัดส่ง',
+    'as_shipping_cost' => 'ค่าจัดส่ง (บาท)',
+    'as_btn_save' => 'บันทึกการตั้งค่า',
+    'as_saved' => 'บันทึกการตั้งค่าเรียบร้อยแล้ว',
+
+    // Admin Login
+    'al_title' => 'เข้าสู่ระบบแอดมิน',
+    'al_username' => 'ชื่อผู้ใช้',
+    'al_password' => 'รหัสผ่าน',
+    'al_btn_login' => 'เข้าสู่ระบบ',
+
+    // Checkout Shipping
+    'chk_free_member' => 'ฟรี (สมาชิก)',
+
+    // Notification Page Inline
+    'notif_unread_msg' => 'คุณมีข้อความที่ยังไม่ได้อ่าน',
+    'notif_items' => 'รายการ',
+    'notif_all_read' => 'ข้อความทั้งหมดได้ถูกอ่านแล้ว ✓',
+    'notif_empty_desc' => 'เมื่อร้านค้ามีโปรโมชั่นหรือข่าวสาร จะแสดงที่นี่',
+    'notif_just_now' => 'เมื่อสักครู่',
+    'notif_min_ago' => ' นาทีที่แล้ว',
+    'notif_hours_ago' => ' ชั่วโมงที่แล้ว',
+    'notif_days_ago' => ' วันที่แล้ว',
+
     // Admin Order Details
     'aod_back' => '← กลับไปหน้ารายการคำสั่งซื้อ',
     'aod_order' => 'คำสั่งซื้อ',

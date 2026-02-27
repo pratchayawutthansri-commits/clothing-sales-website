@@ -30,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $token = bin2hex(random_bytes(32));
                 $expires_at = date('Y-m-d H:i:s', strtotime('+1 hour'));
                 
+                // Clean up expired tokens and old tokens for this email
+                $pdo->prepare("DELETE FROM password_resets WHERE expires_at < NOW() OR email = ?")->execute([$email]);
+
                 $stmtInsert = $pdo->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)");
                 if ($stmtInsert->execute([$email, $token, $expires_at])) {
                     // Send Email

@@ -16,41 +16,78 @@ foreach ($_SESSION['cart'] as $key => $quantity) {
     $parts = explode('_', $key);
     $productId = (int)$parts[0];
     $variantId = isset($parts[1]) ? (int)$parts[1] : 0;
-    if ($productId > 0 && $variantId > 0) {
+    if ($productId > 0) {
         $cartParsed[$key] = ['pid' => $productId, 'vid' => $variantId, 'qty' => $quantity];
     }
 }
 
 if (!empty($cartParsed)) {
-    $variantIds = array_column($cartParsed, 'vid');
-    $placeholders = implode(',', array_fill(0, count($variantIds), '?'));
-    
-    $stmt = $pdo->prepare("
-        SELECT p.name, v.id AS variant_id, v.size, v.price
-        FROM products p
-        JOIN product_variants v ON v.product_id = p.id
-        WHERE v.id IN ($placeholders)
-    ");
-    $stmt->execute($variantIds);
-    $results = $stmt->fetchAll();
-    
-    $resultMap = [];
-    foreach ($results as $row) {
-        $resultMap[$row['variant_id']] = $row;
+    // Separate items with variants and without variants
+    $withVariants = array_filter($cartParsed, fn($c) => $c['vid'] > 0);
+    $withoutVariants = array_filter($cartParsed, fn($c) => $c['vid'] === 0);
+
+    // Fetch items WITH variants
+    if (!empty($withVariants)) {
+        $variantIds = array_column($withVariants, 'vid');
+        $placeholders = implode(',', array_fill(0, count($variantIds), '?'));
+        
+        $stmt = $pdo->prepare("
+            SELECT p.name, v.id AS variant_id, v.size, v.price
+            FROM products p
+            JOIN product_variants v ON v.product_id = p.id
+            WHERE v.id IN ($placeholders)
+        ");
+        $stmt->execute($variantIds);
+        $results = $stmt->fetchAll();
+        
+        $resultMap = [];
+        foreach ($results as $row) {
+            $resultMap[$row['variant_id']] = $row;
+        }
+        
+        foreach ($withVariants as $key => $cartData) {
+            if (isset($resultMap[$cartData['vid']])) {
+                $row = $resultMap[$cartData['vid']];
+                $subtotal = $row['price'] * $cartData['qty'];
+                $total += $subtotal;
+                $cartItems[] = [
+                    'name' => $row['name'],
+                    'size' => $row['size'],
+                    'price' => $row['price'],
+                    'qty' => $cartData['qty'],
+                    'subtotal' => $subtotal
+                ];
+            }
+        }
     }
-    
-    foreach ($cartParsed as $key => $cartData) {
-        if (isset($resultMap[$cartData['vid']])) {
-            $row = $resultMap[$cartData['vid']];
-            $subtotal = $row['price'] * $cartData['qty'];
-            $total += $subtotal;
-            $cartItems[] = [
-                'name' => $row['name'],
-                'size' => $row['size'],
-                'price' => $row['price'],
-                'qty' => $cartData['qty'],
-                'subtotal' => $subtotal
-            ];
+
+    // Fetch items WITHOUT variants (use base_price)
+    if (!empty($withoutVariants)) {
+        $productIds = array_column($withoutVariants, 'pid');
+        $placeholders = implode(',', array_fill(0, count($productIds), '?'));
+
+        $stmt = $pdo->prepare("SELECT id, name, base_price FROM products WHERE id IN ($placeholders)");
+        $stmt->execute($productIds);
+        $results = $stmt->fetchAll();
+
+        $productMap = [];
+        foreach ($results as $row) {
+            $productMap[$row['id']] = $row;
+        }
+
+        foreach ($withoutVariants as $key => $cartData) {
+            if (isset($productMap[$cartData['pid']])) {
+                $row = $productMap[$cartData['pid']];
+                $subtotal = $row['base_price'] * $cartData['qty'];
+                $total += $subtotal;
+                $cartItems[] = [
+                    'name' => $row['name'],
+                    'size' => '-',
+                    'price' => $row['base_price'],
+                    'qty' => $cartData['qty'],
+                    'subtotal' => $subtotal
+                ];
+            }
         }
     }
 }

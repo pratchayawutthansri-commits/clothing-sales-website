@@ -45,7 +45,7 @@ $variants = $stmtV->fetchAll();
 <?php include 'includes/sidebar.php'; ?>
 
 <div class="content">
-    <h1>Edit Product: <?= htmlspecialchars($product['name']) ?></h1>
+    <h1><?= __('aep_title') ?>: <?= htmlspecialchars($product['name']) ?></h1>
     
     <div class="form-container">
         <form action="update_product_logic.php" method="POST" enctype="multipart/form-data">
@@ -53,25 +53,25 @@ $variants = $stmtV->fetchAll();
             <input type="hidden" name="id" value="<?= $product['id'] ?>">
             
             <div class="form-group">
-                <label>Product Name</label>
+                <label><?= __('aap_name') ?></label>
                 <input type="text" name="name" value="<?= htmlspecialchars($product['name']) ?>" required>
             </div>
 
             <div style="display:flex; gap: 20px; margin-bottom: 20px;">
                 <div style="flex:1;">
-                    <label>Badge</label>
+                    <label><?= __('aap_badge') ?></label>
                     <input type="text" name="badge" value="<?= htmlspecialchars($product['badge'] ?? '') ?>" placeholder="e.g. New Arrival, Sale">
                 </div>
                 <div style="flex:0 0 150px; display:flex; align-items:flex-end;">
                      <label style="cursor:pointer; display:flex; align-items:center;">
                         <input type="checkbox" name="is_visible" value="1" <?= $product['is_visible'] ? 'checked' : '' ?> style="width:20px; height:20px; margin-right:10px;">
-                        <span>Visible</span>
+                        <span><?= __('aap_visible') ?></span>
                     </label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Category</label>
+                <label><?= __('aap_category') ?></label>
                 <select name="category">
                     <option value="Tops" <?= $product['category'] == 'Tops' ? 'selected' : '' ?>>Tops</option>
                     <option value="Bottoms" <?= $product['category'] == 'Bottoms' ? 'selected' : '' ?>>Bottoms</option>
@@ -81,33 +81,33 @@ $variants = $stmtV->fetchAll();
             </div>
 
             <div class="form-group">
-                <label>Product Description</label>
+                <label><?= __('aap_desc') ?></label>
                 <textarea name="description" rows="5" required><?= htmlspecialchars($product['description']) ?></textarea>
             </div>
 
             <div class="form-group">
-                <label>Base Price (THB)</label>
+                <label><?= __('aap_base_price') ?></label>
                 <input type="number" name="base_price" value="<?= $product['base_price'] ?>" required min="0" step="0.01">
             </div>
 
             <div class="form-group">
-                <label>Main Image (Upload new to replace)</label>
+                <label><?= __('aep_image_replace') ?></label>
                 <input type="file" name="image" accept="image/*">
                 <?php if ($product['image']): ?>
-                    <div style="margin-top:5px; font-size:0.8rem; color:#666;">Current Image:</div>
+                    <div style="margin-top:5px; font-size:0.8rem; color:#666;"><?= __('aep_current_image') ?></div>
                     <img src="../<?= htmlspecialchars($product['image']) ?>" class="current-img">
                 <?php endif; ?>
             </div>
 
             <div class="form-group">
-                <label>Product Variants</label>
+                <label><?= __('aap_variants') ?></label>
                 <div id="variants-container">
                     <?php foreach ($variants as $v): ?>
                     <div class="variant-group">
                         <input type="hidden" name="existing_variant_ids[]" value="<?= $v['id'] ?>">
-                        <input type="text" name="existing_sizes[]" value="<?= htmlspecialchars($v['size']) ?>" required style="width: 30%;" placeholder="Size">
-                        <input type="number" name="existing_prices[]" value="<?= $v['price'] ?>" required style="width: 30%;" placeholder="Price">
-                        <input type="number" name="existing_stocks[]" value="<?= $v['stock'] ?>" required style="width: 25%;" placeholder="Stock">
+                        <input type="text" name="existing_sizes[]" value="<?= htmlspecialchars($v['size']) ?>" required style="flex: 2;" placeholder="Size">
+                        <input type="number" name="existing_prices[]" value="<?= $v['price'] ?>" required min="0" step="0.01" style="flex: 2;" placeholder="Price">
+                        <input type="number" name="existing_stocks[]" value="<?= $v['stock'] ?>" required min="0" style="flex: 1;" placeholder="Stock">
                         <span style="font-size: 0.8rem; color: #888;">(Edit)</span>
                     </div>
                     <?php endforeach; ?>
@@ -115,10 +115,10 @@ $variants = $stmtV->fetchAll();
                 
                 <div id="new-variants-container"></div>
                 
-                <button type="button" class="btn btn-secondary" onclick="addVariant()" style="margin-top:10px; font-size: 0.9rem;">+ Add New Variant</button>
+                <button type="button" class="btn btn-secondary" onclick="addVariant()" style="margin-top:10px; font-size: 0.9rem;"><?= __('aep_add_new_variant') ?></button>
             </div>
 
-            <button type="submit" class="btn" style="width:100%; margin-top: 20px;">Save Changes</button>
+            <button type="submit" class="btn" style="width:100%; margin-top: 20px;"><?= __('aep_btn_save') ?></button>
         </form>
     </div>
 </div>
@@ -129,10 +129,10 @@ function addVariant() {
     const div = document.createElement('div');
     div.className = 'variant-group';
     div.innerHTML = `
-        <input type="text" name="new_sizes[]" placeholder="Size (e.g. M)" required style="width: 30%;">
-        <input type="number" name="new_prices[]" placeholder="Price" required style="width: 30%;">
-        <input type="number" name="new_stocks[]" value="100" placeholder="Stock" style="width: 25%;">
-        <button type="button" onclick="this.parentElement.remove()" style="background:red; color:white; border:none; border-radius:4px; cursor:pointer; padding: 5px 10px;">X</button>
+        <input type="text" name="new_sizes[]" placeholder="Size (e.g. M)" required style="flex: 2;">
+        <input type="number" name="new_prices[]" placeholder="Price" required min="0" step="0.01" style="flex: 2;">
+        <input type="number" name="new_stocks[]" value="100" placeholder="Stock" min="0" style="flex: 1;">
+        <button type="button" onclick="this.parentElement.remove()" style="background:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer; padding: 10px 15px;" title="Remove Variant">X</button>
     `;
     container.appendChild(div);
 }

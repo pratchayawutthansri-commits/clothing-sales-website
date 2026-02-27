@@ -36,39 +36,66 @@ try {
         $parts = explode('_', $key);
         $productId = (int)($parts[0] ?? 0);
         $variantId = (int)($parts[1] ?? 0);
-        if ($productId <= 0 || $variantId <= 0) continue;
+        if ($productId <= 0) continue;
 
-        // Fetch details AND STOCK with row lock to prevent race conditions
-        $stmt = $pdo->prepare("SELECT p.name, v.price, v.size, v.stock FROM products p JOIN product_variants v ON p.id = v.product_id WHERE p.id = ? AND v.id = ? FOR UPDATE");
-        $stmt->execute([$productId, $variantId]);
-        $item = $stmt->fetch();
+        if ($variantId > 0) {
+            // Product WITH variant — fetch details with row lock
+            $stmt = $pdo->prepare("SELECT p.name, v.price, v.size, v.stock FROM products p JOIN product_variants v ON p.id = v.product_id WHERE p.id = ? AND v.id = ? FOR UPDATE");
+            $stmt->execute([$productId, $variantId]);
+            $item = $stmt->fetch();
 
-        if ($item) {
-            // STOCK CHECK
-            if ($item['stock'] < $qty) {
-                throw new Exception("Product {$item['name']} (Size {$item['size']}) is out of stock (Only {$item['stock']} left)");
+            if ($item) {
+                // STOCK CHECK
+                if ($item['stock'] < $qty) {
+                    throw new Exception("Product {$item['name']} (Size {$item['size']}) is out of stock (Only {$item['stock']} left)");
+                }
+
+                $subtotal = $item['price'] * $qty;
+                $total_price += $subtotal;
+                
+                $order_items[] = [
+                    'product_id' => $productId,
+                    'variant_id' => $variantId,
+                    'product_name' => $item['name'],
+                    'size' => $item['size'],
+                    'price' => $item['price'],
+                    'quantity' => $qty,
+                    'subtotal' => $subtotal
+                ];
             }
+        } else {
+            // Product WITHOUT variant — use base_price
+            $stmt = $pdo->prepare("SELECT name, base_price FROM products WHERE id = ? FOR UPDATE");
+            $stmt->execute([$productId]);
+            $item = $stmt->fetch();
 
-            $subtotal = $item['price'] * $qty;
-            $total_price += $subtotal;
-            
-            $order_items[] = [
-                'product_id' => $productId,
-                'variant_id' => $variantId,
-                'product_name' => $item['name'],
-                'size' => $item['size'],
-                'price' => $item['price'],
-                'quantity' => $qty,
-                'subtotal' => $subtotal
-            ];
+            if ($item) {
+                $subtotal = $item['base_price'] * $qty;
+                $total_price += $subtotal;
+
+                $order_items[] = [
+                    'product_id' => $productId,
+                    'variant_id' => 0,
+                    'product_name' => $item['name'],
+                    'size' => '-',
+                    'price' => $item['base_price'],
+                    'quantity' => $qty,
+                    'subtotal' => $subtotal
+                ];
+            }
         }
+    }
+
+    // Guard: Prevent empty orders (Critical Bug #2 fix)
+    if (empty($order_items)) {
+        throw new Exception("No valid items in cart. Products may have been removed.");
     }
 
     // 3. Handle Slip Upload
     $slipPath = null;
     if ($payment_method === 'BANK_TRANSFER' && isset($_FILES['slip']) && $_FILES['slip']['error'] === 0) {
-        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif'];
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         $maxSize = 5 * 1024 * 1024; // 5MB
         
         $ext = strtolower(pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION));
@@ -127,9 +154,11 @@ try {
             $item['subtotal']
         ]);
 
-        // CUT STOCK
-        $stmtStock = $pdo->prepare("UPDATE product_variants SET stock = stock - ? WHERE id = ?");
-        $stmtStock->execute([$item['quantity'], $item['variant_id']]);
+        // CUT STOCK (only for items with variants)
+        if ($item['variant_id'] > 0) {
+            $stmtStock = $pdo->prepare("UPDATE product_variants SET stock = stock - ? WHERE id = ?");
+            $stmtStock->execute([$item['quantity'], $item['variant_id']]);
+        }
     }
 
     $pdo->commit();

@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Security Check Failed: Invalid Token";
     } else {
         $username_or_email = trim($_POST['username'] ?? '');
-        $password = trim($_POST['password'] ?? '');
+        $password = $_POST['password'] ?? '';
 
         if (empty($username_or_email) || empty($password)) {
             $error = "Please enter both username/email and password.";

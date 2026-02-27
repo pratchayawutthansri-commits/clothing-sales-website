@@ -72,9 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $product_id = $pdo->lastInsertId();
 
         // 3. Insert Variants
-        $sizes = $_POST['sizes'];
-        $prices = $_POST['prices'];
-        $stocks = $_POST['stocks'];
+        $sizes = $_POST['sizes'] ?? [];
+        $prices = $_POST['prices'] ?? [];
+        $stocks = $_POST['stocks'] ?? [];
 
         $stmtV = $pdo->prepare("INSERT INTO product_variants (product_id, size, price, stock) VALUES (?, ?, ?, ?)");
 

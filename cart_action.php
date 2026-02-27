@@ -25,15 +25,24 @@ if ($action === 'add') {
     if ($quantity > 100) $quantity = 100; // Cap max quantity
     if ($quantity < 1) $quantity = 1;
 
-    if ($product_id > 0 && $variant_id > 0) {
-        // Verify variant belongs to this product
-        $stmtCheck = $pdo->prepare("SELECT id FROM product_variants WHERE id = ? AND product_id = ?");
-        $stmtCheck->execute([$variant_id, $product_id]);
-        if (!$stmtCheck->fetch()) {
-            redirect('shop.php'); // Invalid variant-product pair
+    if ($product_id > 0) {
+        if ($variant_id > 0) {
+            // Product WITH variant — verify variant belongs to product
+            $stmtCheck = $pdo->prepare("SELECT id FROM product_variants WHERE id = ? AND product_id = ?");
+            $stmtCheck->execute([$variant_id, $product_id]);
+            if (!$stmtCheck->fetch()) {
+                redirect('shop.php'); // Invalid variant-product pair
+            }
+        } else {
+            // Product WITHOUT variant (variant_id=0) — verify product exists
+            $stmtCheck = $pdo->prepare("SELECT id FROM products WHERE id = ? AND is_visible = 1");
+            $stmtCheck->execute([$product_id]);
+            if (!$stmtCheck->fetch()) {
+                redirect('shop.php'); // Invalid product
+            }
         }
 
-        $cartKey = $product_id . '_' . $variant_id; // Key: ProductID_VariantID
+        $cartKey = $product_id . '_' . $variant_id; // Key: ProductID_VariantID (0 = no variant)
 
         if (isset($_SESSION['cart'][$cartKey])) {
             $_SESSION['cart'][$cartKey] += $quantity;

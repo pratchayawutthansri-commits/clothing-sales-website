@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($data as $key => $val) {
             $stmt->execute([$key, $val]);
         }
-        $success = "Shop settings saved successfully";
+        $success = __('as_saved');
     }
     
 }
@@ -59,7 +59,7 @@ while ($row = $stmt->fetch()) {
 
 <div class="content">
     <div class="box" style="margin-bottom: 30px; max-width: 800px;">
-        <h1>Shop Settings</h1>
+        <h1><?= __('as_title') ?></h1>
         
         <?php if ($success): ?>
             <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
@@ -69,29 +69,29 @@ while ($row = $stmt->fetch()) {
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['admin_csrf_token'] ?? '' ?>">
             <input type="hidden" name="update_settings" value="1">
             
-            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">Bank Info</h3>
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;"><?= __('as_bank_info') ?></h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="form-group">
-                    <label>Bank Name</label>
+                    <label><?= __('as_bank_name') ?></label>
                     <input type="text" name="bank_name" value="<?= htmlspecialchars($currentSettings['bank_name'] ?? '') ?>" required>
                 </div>
                 <div class="form-group">
-                    <label>Account Number</label>
+                    <label><?= __('as_acc_number') ?></label>
                     <input type="text" name="bank_account" value="<?= htmlspecialchars($currentSettings['bank_account'] ?? '') ?>" required>
                 </div>
                 <div class="form-group">
-                    <label>Account Name</label>
+                    <label><?= __('as_acc_name') ?></label>
                     <input type="text" name="bank_owner" value="<?= htmlspecialchars($currentSettings['bank_owner'] ?? '') ?>" required>
                 </div>
             </div>
 
-            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; margin-top: 30px;">Shipping</h3>
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; margin-top: 30px;"><?= __('as_shipping') ?></h3>
             <div class="form-group">
-                <label>Shipping Cost (THB)</label>
+                <label><?= __('as_shipping_cost') ?></label>
                 <input type="number" name="shipping_cost" value="<?= htmlspecialchars($currentSettings['shipping_cost'] ?? '50') ?>" required min="0">
             </div>
             
-            <button type="submit">Save Shop Settings</button>
+            <button type="submit"><?= __('as_btn_save') ?></button>
         </form>
     </div>
 

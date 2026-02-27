@@ -90,6 +90,9 @@ include 'includes/header.php';
                             <?php endforeach; ?>
                         </div>
                     </div>
+                    <?php else: ?>
+                    <!-- No variants: use product base_price directly -->
+                    <input type="hidden" name="variant_id" value="0">
                     <?php endif; ?>
                     
                     <div class="form-group">

@@ -35,19 +35,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order'])) {
         die("Invalid status value");
     }
     
-    $stmtUpdate = $pdo->prepare("UPDATE orders SET status = ?, tracking_number = ? WHERE id = ?");
-    $stmtUpdate->execute([$newStatus, $tracking, $id]);
+    $pdo->beginTransaction();
+    try {
+        $stmtUpdate = $pdo->prepare("UPDATE orders SET status = ?, tracking_number = ? WHERE id = ?");
+        $stmtUpdate->execute([$newStatus, $tracking, $id]);
 
-    // Refund stock if cancelling
-    if ($newStatus === 'cancelled' && $order['status'] !== 'cancelled') {
-        $stmtRefundItems = $pdo->prepare("SELECT variant_id, quantity FROM order_items WHERE order_id = ?");
-        $stmtRefundItems->execute([$id]);
-        $refundItems = $stmtRefundItems->fetchAll();
-        
-        $stmtRefundStock = $pdo->prepare("UPDATE product_variants SET stock = stock + ? WHERE id = ?");
-        foreach ($refundItems as $ri) {
-            $stmtRefundStock->execute([$ri['quantity'], $ri['variant_id']]);
+        // Refund stock if cancelling
+        if ($newStatus === 'cancelled' && $order['status'] !== 'cancelled') {
+            $stmtRefundItems = $pdo->prepare("SELECT variant_id, quantity FROM order_items WHERE order_id = ?");
+            $stmtRefundItems->execute([$id]);
+            $refundItems = $stmtRefundItems->fetchAll();
+            
+            $stmtRefundStock = $pdo->prepare("UPDATE product_variants SET stock = stock + ? WHERE id = ?");
+            foreach ($refundItems as $ri) {
+                if ($ri['variant_id'] > 0) { // Only refund for variant items
+                    $stmtRefundStock->execute([$ri['quantity'], $ri['variant_id']]);
+                }
+            }
         }
+        
+        $pdo->commit();
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        error_log("Order update error: " . $e->getMessage());
+        die("Error updating order. Please try again.");
     }
     
     // Send Email Notification
