@@ -43,7 +43,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="XIVEX - สตรีทแวร์พรีเมียมสไตล์ไทย เสื้อผ้าแฟชั่นคุณภาพ ออกแบบด้วยความใส่ใจในทุกรายละเอียด">
-    <link rel="icon" href="<?= defined('SITE_URL') ? SITE_URL : '' ?>/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="<?= defined('SITE_URL') ? SITE_URL : '' ?>favicon.ico" type="image/x-icon">
     <title>XIVEX | สตรีทแวร์พรีเมียม</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -280,6 +280,7 @@ if (isset($_SESSION['user_id'])) {
         </div>
 
         <nav>
+                <div class="nav-overlay" id="navOverlay"></div>
                 <ul class="nav-menu">
                     <li><a href="index.php" class="nav-link"><?= mb_strtoupper(__('home')) ?></a></li>
                     <li><a href="shop.php" class="nav-link"><?= mb_strtoupper(__('shop_all')) ?></a></li>
@@ -295,78 +296,56 @@ if (isset($_SESSION['user_id'])) {
                         </a>
                     </li>
                     <?php if(isset($_SESSION['user_id'])): ?>
-                    <li style="margin-left: 15px; display: flex; align-items: center;">
-                        <!-- Premium Notification Bell -->
-                        <div class="notif-wrapper">
-                            <a href="notifications.php" class="notif-btn" title="<?= __('notifications') ?>">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                                </svg>
-                                <?php if($unread_notifications_count > 0): ?>
-                                    <span class="notif-badge has-notif"><?= $unread_notifications_count ?></span>
-                                <?php endif; ?>
-                            </a>
-
-                            <!-- Dropdown Preview -->
-                            <div class="notif-dropdown">
-                                <div class="notif-dd-header">
-                                    <h4><?= __('notifications') ?></h4>
-                                    <?php if($unread_notifications_count > 0): ?>
-                                        <span><?= $unread_notifications_count ?> <?= $_SESSION['lang'] === 'th' ? 'ใหม่' : 'new' ?></span>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="notif-dd-list">
-                                    <?php if(empty($latest_notifications)): ?>
-                                        <div class="notif-dd-empty"><?= __('no_notifications') ?></div>
-                                    <?php else: ?>
-                                        <?php foreach($latest_notifications as $ln): ?>
-                                            <?php
-                                                $nIcon = 'ℹ️'; $nClass = 'info';
-                                                if($ln['type'] === 'promo') { $nIcon = '🎉'; $nClass = 'promo'; }
-                                                if($ln['type'] === 'alert') { $nIcon = '⚠️'; $nClass = 'alert'; }
-                                                
-                                                $diff = time() - strtotime($ln['created_at']);
-                                                if ($diff < 60) $timeAgo = ($_SESSION['lang'] === 'th' ? 'เมื่อสักครู่' : 'Just now');
-                                                elseif ($diff < 3600) $timeAgo = floor($diff/60) . ($_SESSION['lang'] === 'th' ? ' นาทีที่แล้ว' : 'm ago');
-                                                elseif ($diff < 86400) $timeAgo = floor($diff/3600) . ($_SESSION['lang'] === 'th' ? ' ชั่วโมงที่แล้ว' : 'h ago');
-                                                else $timeAgo = floor($diff/86400) . ($_SESSION['lang'] === 'th' ? ' วันที่แล้ว' : 'd ago');
-                                            ?>
-                                            <a href="notifications.php?view=<?= $ln['id'] ?>" class="notif-dd-item <?= !$ln['is_read'] ? 'unread' : '' ?>">
-                                                <div class="notif-dd-icon <?= $nClass ?>"><?= $nIcon ?></div>
-                                                <div class="notif-dd-body">
-                                                    <div class="notif-dd-title"><?= htmlspecialchars($ln['title']) ?></div>
-                                                    <div class="notif-dd-time"><?= $timeAgo ?></div>
-                                                </div>
-                                                <?php if(!$ln['is_read']): ?>
-                                                    <div class="notif-dd-dot"></div>
-                                                <?php endif; ?>
-                                            </a>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="notif-dd-footer">
-                                    <a href="notifications.php"><?= $_SESSION['lang'] === 'th' ? 'ดูทั้งหมด →' : 'View All →' ?></a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <span style="font-weight: 600; font-size: 0.95rem;"><?= __('hi_user') ?><a href="profile.php" style="color: #000; text-decoration: underline;"><?= htmlspecialchars($_SESSION['username']) ?></a>!</span>
-                        <a href="logout.php" style="margin-left:10px; font-size: 0.85rem; color: #dc3545; text-decoration: none; font-weight: 600;"><?= mb_strtoupper(__('nav_logout')) ?></a>
+                    <li class="user-info-mobile">
+                        <span><?= __('hi_user') ?><a href="profile.php"><?= htmlspecialchars($_SESSION['username']) ?></a>!</span>
+                        <a href="logout.php" class="logout-link"><?= mb_strtoupper(__('nav_logout')) ?></a>
                     </li>
                     <?php else: ?>
-                    <li style="margin-left: 15px;">
-                        <a href="login.php" class="nav-link" style="font-size: 0.95rem !important; display: inline-block;"><?= mb_strtoupper(__('login')) ?></a>
-                        <span style="color:#ccc; margin: 0 5px;">/</span>
-                        <a href="register.php" class="nav-link" style="font-size: 0.95rem !important; display: inline-block;"><?= mb_strtoupper(__('nav_register')) ?></a>
+                    <li class="auth-links-mobile">
+                        <a href="login.php" class="nav-link"><?= mb_strtoupper(__('login')) ?></a>
+                        <span class="divider">/</span>
+                        <a href="register.php" class="nav-link"><?= mb_strtoupper(__('nav_register')) ?></a>
                     </li>
                     <?php endif; ?>
-                    <li class="lang-switch" style="margin-left: 20px;">
+                    <li class="lang-switch-mobile">
                         <a href="change_language.php?lang=th" class="<?= $_SESSION['lang'] === 'th' ? 'active' : '' ?>">TH</a> 
-                        <span style="color:#ccc;">|</span> 
+                        <span class="divider">|</span> 
                         <a href="change_language.php?lang=en" class="<?= $_SESSION['lang'] === 'en' ? 'active' : '' ?>">EN</a>
                     </li>
                 </ul>
         </nav>
     </div>
 </header>
+
+<script>
+// Mobile Menu Toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    const navOverlay = document.getElementById('navOverlay');
+    const body = document.body;
+    
+    function toggleMenu() {
+        if (!mobileToggle || !navMenu || !navOverlay) return;
+        mobileToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
+        navOverlay.classList.toggle('active');
+        body.classList.toggle('no-scroll');
+    }
+
+    if (mobileToggle && navMenu && navOverlay) {
+        mobileToggle.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', toggleMenu);
+        
+        // Close menu when clicking on links
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (navMenu.classList.contains('active')) {
+                    toggleMenu();
+                }
+            });
+        });
+    }
+});
+</script>

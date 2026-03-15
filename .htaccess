@@ -1,0 +1,15 @@
+# Protect sensitive files from web access
+<FilesMatch "^\.env$">
+    Require all denied
+</FilesMatch>
+
+# Block access to .git directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^\.git - [F,L]
+</IfModule>
+
+# Block access to SQL files
+<FilesMatch "\.(sql|log)$">
+    Require all denied
+</FilesMatch>

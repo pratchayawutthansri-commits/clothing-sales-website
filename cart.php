@@ -21,18 +21,27 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     }
 
     if (!empty($cartParsed)) {
-        // Build single JOIN query for all items
-        $variantIds = array_column($cartParsed, 'vid');
-        $placeholders = implode(',', array_fill(0, count($variantIds), '?'));
-        
-        $stmt = $pdo->prepare("
-            SELECT p.*, v.id AS variant_id, v.size, v.price AS variant_price
-            FROM products p
-            JOIN product_variants v ON v.product_id = p.id
-            WHERE v.id IN ($placeholders)
-        ");
-        $stmt->execute($variantIds);
-        $results = $stmt->fetchAll();
+        try {
+            // Build single JOIN query for all items
+            $variantIds = array_column($cartParsed, 'vid');
+            $placeholders = implode(',', array_fill(0, count($variantIds), '?'));
+            
+            $stmt = $pdo->prepare("
+                SELECT p.*, v.id AS variant_id, v.size, v.price AS variant_price
+                FROM products p
+                JOIN product_variants v ON v.product_id = p.id
+                WHERE v.id IN ($placeholders)
+            ");
+            $stmt->execute($variantIds);
+            $results = $stmt->fetchAll();
+        } catch (PDOException $e) {
+            error_log("Cart database error: " . $e->getMessage());
+            // Clear potentially corrupted cart data
+            $_SESSION['cart'] = [];
+            $cartItems = [];
+            $total = 0;
+            $results = [];
+        }
         
         // Index results by variant_id for quick lookup
         $resultMap = [];

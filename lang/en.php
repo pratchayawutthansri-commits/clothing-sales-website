@@ -13,8 +13,26 @@ return [
     'login' => 'Login',
     'admin' => 'Admin',
     'nav_register' => 'Register',
-    'nav_logout' => 'Logout',
+    'nav_logout' => 'Log Out',
     'hi_user' => 'Hi, ',
+
+    'abt_hero_h1' => 'ABOUT XIVEX',
+    'abt_hero_p' => 'DEFINING MODERN STREETWEAR SINCE 2024',
+    'abt_vision_label' => 'OUR STORY',
+    'abt_vision_h2' => 'Our Vision',
+    'abt_vision_p' => 'At XIVEX, we believe that clothing is more than just fabric—it is an expression of your unfiltered self. Based in the heart of urban culture, we create pieces that combine premium quality with minimal design, allowing your identity to take center stage.',
+    'abt_craft_h2' => 'Quality & Craftsmanship',
+    'abt_craft_p' => 'Every XIVEX garment is meticulously designed and tested for the perfect fit. We source only the finest high-GSM fabrics to ensure that our pieces survive the streets and the seasons.',
+    'abt_values_h2' => 'Why Choose Us?',
+    'abt_val_1_title' => 'Premium Quality',
+    'abt_val_1_desc' => 'We use high-density fabrics and reinforced stitching for durability.',
+    'abt_val_2_title' => 'Modern Design',
+    'abt_val_2_desc' => 'Clean silhouettes that fit perfectly into any urban wardrobe.',
+    'abt_val_3_title' => 'Fast Delivery',
+    'abt_val_3_desc' => 'Your fresh drops delivered to your door with speed and care.',
+    'abt_values_sub' => 'Every decision at XIVEX is measured against the same principle — if it is not good enough for us, it is not good enough for you.',
+    'abt_cta_h2' => 'Ready to define your style?',
+    'abt_cta_btn' => 'Shop Collection',
 
     // Auth Pages
     'login_title' => 'Welcome Back',
@@ -330,5 +348,15 @@ return [
     'prof_total_amount' => 'Total Amount',
     'prof_tracking' => 'Tracking Number',
     'prof_view_receipt' => 'View Receipt',
+
+    // Hardcoded strings fix (Language Bug)
+    'notif_badge_new' => 'new',
+    'notif_view_all' => 'View All →',
+    'ao_sub_pending' => 'Orders awaiting review',
+    'ao_sub_toship' => 'Paid & ready to ship',
+    'dash_chart_badge' => 'Last 6 months',
+    'dash_cat_title' => 'Sales by Category',
+    'dash_no_sales' => 'No sales data yet',
+    'dash_revenue_label' => 'Revenue (THB)',
 ];
 ?>

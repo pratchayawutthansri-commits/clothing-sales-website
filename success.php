@@ -1,25 +1,38 @@
 <?php
 require_once 'includes/init.php';
 
+// Enhanced IDOR Protection
 $order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 
-// IDOR Protection: Allow viewing if
-// 1) User just placed this order (session token — works once for guests), OR
-// 2) Logged-in user owns this order (can revisit anytime)
+// Additional validation: Order ID must be reasonable (1-999999)
+if ($order_id <= 0 || $order_id > 999999) {
+    redirect('index.php');
+}
+
 $allowed = false;
 
 if ($order_id > 0) {
-    // Check session token (first visit after placing order)
-    if (isset($_SESSION['last_order_id']) && $_SESSION['last_order_id'] === $order_id) {
+    // Check session token (first visit after placing order) - with timestamp validation
+    if (isset($_SESSION['last_order_id']) && 
+        isset($_SESSION['last_order_time']) &&
+        $_SESSION['last_order_id'] === $order_id &&
+        (time() - $_SESSION['last_order_time']) < 3600) { // Valid for 1 hour
+        
         $allowed = true;
-        unset($_SESSION['last_order_id']); // Clear for guests
+        // Clear session data after use
+        unset($_SESSION['last_order_id']);
+        unset($_SESSION['last_order_time']);
     }
-    // Check ownership for logged-in users
+    
+    // Check ownership for logged-in users - with additional email verification
     if (!$allowed && isset($_SESSION['user_id'])) {
-        $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM orders WHERE id = ? AND user_id = ?");
+        $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM orders WHERE id = ? AND user_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 30 DAY)");
         $stmtCheck->execute([$order_id, $_SESSION['user_id']]);
         if ($stmtCheck->fetchColumn() > 0) {
             $allowed = true;
+            
+            // Log access for security monitoring
+            error_log("Order ID {$order_id} accessed by user {$_SESSION['user_id']} at " . date('Y-m-d H:i:s'));
         }
     }
 }

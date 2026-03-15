@@ -1,9 +1,7 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Use the same session system as main application
+require_once '../includes/init.php';
 require_once 'includes/config.php';
-require_once '../includes/db.php'; // DB Connection required for auth
 require_once '../includes/functions.php';
 
 // CSRF Generation

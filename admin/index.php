@@ -321,7 +321,7 @@ $catValues = array_map('floatval', array_column($catData, 'total'));
         <div class="chart-box">
             <div class="chart-header">
                 <h2><?= __('dash_chart_title') ?></h2>
-                <span class="chart-badge"><?= $_SESSION['lang'] === 'th' ? '6 เดือนล่าสุด' : 'Last 6 months' ?></span>
+                <span class="chart-badge"><?= __('dash_chart_badge') ?></span>
             </div>
             <div style="height: 300px;">
                 <canvas id="salesChart"></canvas>
@@ -331,11 +331,11 @@ $catValues = array_map('floatval', array_column($catData, 'total'));
         <!-- Doughnut Chart: Sales by Category -->
         <div class="chart-box">
             <div class="chart-header">
-                <h2><?= $_SESSION['lang'] === 'th' ? 'ยอดขายตามหมวดหมู่' : 'Sales by Category' ?></h2>
+                <h2><?= __('dash_cat_title') ?></h2>
             </div>
             <div style="height: 300px; display: flex; align-items: center; justify-content: center;">
                 <?php if (empty($catData)): ?>
-                    <p style="color: #94a3b8; font-size: 0.9rem;"><?= $_SESSION['lang'] === 'th' ? 'ยังไม่มีข้อมูลยอดขาย' : 'No sales data yet' ?></p>
+                    <p style="color: #94a3b8; font-size: 0.9rem;"><?= __('dash_no_sales') ?></p>
                 <?php else: ?>
                     <canvas id="catChart"></canvas>
                 <?php endif; ?>
@@ -352,7 +352,7 @@ $catValues = array_map('floatval', array_column($catData, 'total'));
         data: {
             labels: <?= json_encode($months) ?>,
             datasets: [{
-                label: '<?= $_SESSION['lang'] === 'th' ? 'รายได้ (บาท)' : 'Revenue (THB)' ?>',
+                label: '<?= __('dash_revenue_label') ?>',
                 data: <?= json_encode($sales) ?>,
                 backgroundColor: '#1e293b',
                 hoverBackgroundColor: '#334155',

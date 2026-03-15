@@ -163,7 +163,7 @@ $toShipCount = $stmtToShip->fetchColumn();
             <div class="ostat-info">
                 <h3><?= __('ao_pending') ?></h3>
                 <div class="ostat-number"><?= $pendingOrders ?></div>
-                <div class="ostat-sub"><?= $_SESSION['lang'] === 'th' ? 'คำสั่งซื้อรอตรวจสอบ' : 'Orders awaiting review' ?></div>
+                <div class="ostat-sub"><?= __('ao_sub_pending') ?></div>
             </div>
             <div class="ostat-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -173,7 +173,7 @@ $toShipCount = $stmtToShip->fetchColumn();
             <div class="ostat-info">
                 <h3><?= __('ao_to_ship') ?></h3>
                 <div class="ostat-number"><?= $toShipCount ?></div>
-                <div class="ostat-sub"><?= $_SESSION['lang'] === 'th' ? 'ชำระแล้ว พร้อมจัดส่ง' : 'Paid & ready to ship' ?></div>
+                <div class="ostat-sub"><?= __('ao_sub_toship') ?></div>
             </div>
             <div class="ostat-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>

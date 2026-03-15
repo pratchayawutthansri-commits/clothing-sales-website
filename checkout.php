@@ -10,14 +10,22 @@ if (empty($_SESSION['cart'])) {
 $total = 0;
 $cartItems = [];
 
-// Parse cart keys
+// Parse cart keys - Consistent with cart.php logic
 $cartParsed = [];
 foreach ($_SESSION['cart'] as $key => $quantity) {
     $parts = explode('_', $key);
     $productId = (int)$parts[0];
     $variantId = isset($parts[1]) ? (int)$parts[1] : 0;
-    if ($productId > 0) {
+    
+    // Enhanced validation: Only allow valid product/variant combinations
+    if ($productId > 0 && $variantId > 0) {
         $cartParsed[$key] = ['pid' => $productId, 'vid' => $variantId, 'qty' => $quantity];
+    } elseif ($productId > 0 && $variantId === 0) {
+        // Allow products without variants
+        $cartParsed[$key] = ['pid' => $productId, 'vid' => 0, 'qty' => $quantity];
+    } else {
+        // Remove invalid cart entries
+        unset($_SESSION['cart'][$key]);
     }
 }
 
@@ -181,7 +189,7 @@ include 'includes/header.php';
             
             <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; display:flex; justify-content:space-between; font-size: 0.9rem;">
                 <span><?= __('chk_shipping') ?></span>
-                <span><?= isset($_SESSION['user_id']) ? '<span style="color: #22c55e; font-weight: 600;">' . ($_SESSION['lang'] === 'th' ? 'ฟรี (สมาชิก)' : 'Free (Member)') . '</span>' : formatPrice($shippingCost) ?></span>
+                <span><?= isset($_SESSION['user_id']) ? '<span style="color: #22c55e; font-weight: 600;">' . __('chk_free_member') . '</span>' : formatPrice($shippingCost) ?></span>
             </div>
             
             <div style="border-top: 2px solid #333; padding-top: 20px; margin-top: 10px; font-weight: 700; display:flex; justify-content:space-between; font-size: 1.2rem;">

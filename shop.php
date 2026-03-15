@@ -2,14 +2,21 @@
 require_once 'includes/init.php';
 include 'includes/header.php';
 
-$category = $_GET['cat'] ?? '';
+// Input Validation - Prevent SQL Injection
+$category = trim($_GET['cat'] ?? '');
 $isNew = isset($_GET['new']);
 $whereClause = "";
 $params = [];
 
-if ($category) {
+// Whitelist valid categories to prevent SQL injection
+$validCategories = ['Tops', 'Bottoms', 'Outerwear', 'Accessories'];
+
+if ($category && in_array($category, $validCategories)) {
     $whereClause = "WHERE category = ? AND is_visible = 1";
     $params[] = $category;
+} elseif ($category) {
+    // Invalid category - redirect to safe page
+    redirect('shop.php');
 } else {
     $whereClause = "WHERE is_visible = 1";
 }

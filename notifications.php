@@ -337,13 +337,13 @@ include 'includes/header.php';
                 <h1><?= __('notifications') ?></h1>
                 <p>
                     <?php if ($unreadCount > 0): ?>
-                        <?= $_SESSION['lang'] === 'th' ? 'คุณมีข้อความที่ยังไม่ได้อ่าน' : 'You have unread messages' ?>
+                        <?= __('notif_unread_msg') ?>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
-                            <?= $unreadCount ?> <?= $_SESSION['lang'] === 'th' ? 'รายการ' : 'items' ?>
+                            <?= $unreadCount ?> <?= __('notif_items') ?>
                         </span>
                     <?php else: ?>
-                        <?= $_SESSION['lang'] === 'th' ? 'ข้อความทั้งหมดได้ถูกอ่านแล้ว ✓' : 'All messages have been read ✓' ?>
+                        <?= __('notif_all_read') ?>
                     <?php endif; ?>
                 </p>
             </div>
@@ -365,7 +365,7 @@ include 'includes/header.php';
                 <div class="notif-empty">
                     <div class="notif-empty-icon">🔔</div>
                     <h3><?= __('no_notifications') ?></h3>
-                    <p><?= $_SESSION['lang'] === 'th' ? 'เมื่อร้านค้ามีโปรโมชั่นหรือข่าวสาร จะแสดงที่นี่' : 'When the store has promotions or news, they will appear here' ?></p>
+                    <p><?= __('notif_empty_desc') ?></p>
                     <a href="shop.php"><?= __('continue_shopping_btn') ?></a>
                 </div>
             <?php else: ?>
@@ -378,10 +378,10 @@ include 'includes/header.php';
                         
                         // Relative time
                         $diff = time() - strtotime($notif['created_at']);
-                        if ($diff < 60) $timeAgo = ($_SESSION['lang'] === 'th' ? 'เมื่อสักครู่' : 'Just now');
-                        elseif ($diff < 3600) $timeAgo = floor($diff/60) . ($_SESSION['lang'] === 'th' ? ' นาทีที่แล้ว' : ' min ago');
-                        elseif ($diff < 86400) $timeAgo = floor($diff/3600) . ($_SESSION['lang'] === 'th' ? ' ชั่วโมงที่แล้ว' : ' hours ago');
-                        elseif ($diff < 604800) $timeAgo = floor($diff/86400) . ($_SESSION['lang'] === 'th' ? ' วันที่แล้ว' : ' days ago');
+                        if ($diff < 60) $timeAgo = __('notif_just_now');
+                        elseif ($diff < 3600) $timeAgo = floor($diff/60) . __('notif_min_ago');
+                        elseif ($diff < 86400) $timeAgo = floor($diff/3600) . __('notif_hours_ago');
+                        elseif ($diff < 604800) $timeAgo = floor($diff/86400) . __('notif_days_ago');
                         else $timeAgo = date('d M Y', strtotime($notif['created_at']));
                     ?>
                     <div class="notif-card <?= !$notif['is_read'] ? 'unread' : '' ?>" style="animation-delay: <?= min($idx * 0.05, 0.3) ?>s;">

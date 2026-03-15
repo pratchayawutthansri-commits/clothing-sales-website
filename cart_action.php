@@ -1,6 +1,5 @@
 <?php
 require_once 'includes/init.php';
-require_once 'includes/functions.php';
 
 // Ensure Cart exists
 if (!isset($_SESSION['cart'])) {

@@ -2,7 +2,15 @@
 require_once 'includes/init.php';
 
 // --- CONTROLLER LOGIC ---
+// Enhanced input validation
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Validate product ID range to prevent abuse
+if ($id <= 0 || $id > 999999) {
+    error_log("Invalid product ID access attempt: {$id} from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+    redirect('shop.php');
+}
+
 $product = null;
 $variants = [];
 $min_price = 0;

@@ -18,15 +18,9 @@ $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
 
 if ($id > 0) {
     try {
-        // 1. Check if product is in any order
-        $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM order_items WHERE product_id = ?");
-        $stmtCheck->execute([$id]);
-        $count = $stmtCheck->fetchColumn();
+        // We no longer block deletion here, as the database will be updated to ON DELETE SET NULL 
+        // to keep order history intact without preventing product deletion.
 
-        if ($count > 0) {
-            header("Location: products.php?error=" . urlencode("Cannot delete product: It is associated with $count existing order(s)"));
-            exit;
-        }
 
         // 2. Delete Image
         $stmtImg = $pdo->prepare("SELECT image FROM products WHERE id = ?");

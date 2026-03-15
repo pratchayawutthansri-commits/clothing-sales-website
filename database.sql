@@ -105,6 +105,17 @@ CREATE TABLE IF NOT EXISTS user_notifications (
     FOREIGN KEY (notification_id) REFERENCES notifications (id) ON DELETE CASCADE
 );
 
+-- Password Resets Table (For Forgot Password Flow)
+CREATE TABLE IF NOT EXISTS password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL,
+    token VARCHAR(64) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_token (token),
+    INDEX idx_email (email)
+);
+
 -- Seed Data for Products (THAI Content)
 INSERT INTO
     products (

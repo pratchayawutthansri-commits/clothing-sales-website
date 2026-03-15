@@ -45,9 +45,18 @@ try {
             $item = $stmt->fetch();
 
             if ($item) {
-                // STOCK CHECK
+                // ENHANCED STOCK CHECK - Double verification to prevent race conditions
                 if ($item['stock'] < $qty) {
                     throw new Exception("Product {$item['name']} (Size {$item['size']}) is out of stock (Only {$item['stock']} left)");
+                }
+                
+                // Additional safety check: Reserve stock immediately to prevent overselling
+                $reserveStmt = $pdo->prepare("UPDATE product_variants SET stock = stock - ? WHERE id = ? AND stock >= ?");
+                $reserveResult = $reserveStmt->execute([$qty, $variantId, $qty]);
+                
+                if ($reserveStmt->rowCount() === 0) {
+                    // Stock changed between our read and update - another order got it first
+                    throw new Exception("Sorry, product {$item['name']} (Size {$item['size']}) just went out of stock. Please try again.");
                 }
 
                 $subtotal = $item['price'] * $qty;
@@ -91,22 +100,31 @@ try {
         throw new Exception("No valid items in cart. Products may have been removed.");
     }
 
-    // 3. Handle Slip Upload
+    // 3. Enhanced Slip Upload Security
     $slipPath = null;
     if ($payment_method === 'BANK_TRANSFER' && isset($_FILES['slip']) && $_FILES['slip']['error'] === 0) {
         $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         $maxSize = 5 * 1024 * 1024; // 5MB
         
+        // Enhanced file validation
         $ext = strtolower(pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION));
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->file($_FILES['slip']['tmp_name']);
         
+        // Multiple security checks
         if (!in_array($ext, $allowed) || !in_array($mimeType, $allowedMimes)) {
-            throw new Exception("Invalid file type (Allowed: JPG, PNG, GIF)");
+            error_log("Upload security breach attempt: Invalid file type - Ext: {$ext}, MIME: {$mimeType}, IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+            throw new Exception("Invalid file type (Allowed: JPG, PNG, GIF, WEBP)");
         }
         if ($_FILES['slip']['size'] > $maxSize) {
             throw new Exception("File is too large (Max 5MB)");
+        }
+        
+        // Additional security: Verify file content is actually an image
+        if (!getimagesize($_FILES['slip']['tmp_name'])) {
+            error_log("Upload security breach attempt: Fake image file - IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+            throw new Exception("Invalid image file content");
         }
         
         $uploadDir = 'uploads/slips/';
@@ -154,18 +172,21 @@ try {
             $item['subtotal']
         ]);
 
-        // CUT STOCK (only for items with variants)
-        if ($item['variant_id'] > 0) {
-            $stmtStock = $pdo->prepare("UPDATE product_variants SET stock = stock - ? WHERE id = ?");
-            $stmtStock->execute([$item['quantity'], $item['variant_id']]);
-        }
+        // STOCK ALREADY CUT during reservation phase above
+        // No need to cut again - this prevents double deduction
+        // (Stock was already reserved in the enhanced check phase)
     }
 
     $pdo->commit();
 
-    // 5. Clear Cart & Redirect
+    // 5. Clear Cart & Redirect with Enhanced Session Security
     $_SESSION['last_order_id'] = (int)$order_id; // For IDOR protection on success page
+    $_SESSION['last_order_time'] = time(); // Timestamp for session validation
     unset($_SESSION['cart']);
+    
+    // Log successful order for security monitoring
+    error_log("Order {$order_id} created successfully for user: " . ($_SESSION['user_id'] ?? 'guest') . " at " . date('Y-m-d H:i:s'));
+    
     redirect("success.php?order_id=" . $order_id);
 
 } catch (Exception $e) {
