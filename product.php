@@ -19,15 +19,11 @@ $error_message = '';
 
 try {
     // 1. Fetch Product
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ? AND is_visible = 1");
-    $stmt->execute([$id]);
-    $product = $stmt->fetch();
+    $product = Product::find($id);
 
     if ($product) {
         // 2. Fetch Variants
-        $stmt_variants = $pdo->prepare("SELECT * FROM product_variants WHERE product_id = ? ORDER BY price ASC");
-        $stmt_variants->execute([$id]);
-        $variants = $stmt_variants->fetchAll();
+        $variants = Product::getVariants($id);
 
         // 3. Determine Price Range
         $min_price = $product['base_price'];
