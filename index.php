@@ -3,9 +3,8 @@ require_once 'includes/init.php';
 include 'includes/header.php';
 
 // Fetch featured products (newest 4 visible products)
-$stmt = $pdo->query("SELECT * FROM products WHERE is_visible = 1 ORDER BY created_at DESC LIMIT 4");
-$featured_products = $stmt->fetchAll();
-?>
+$featured_products = Product::getFeatured(4);
+?> loam
 
 <!-- Premium Dynamic Styles -->
 <link rel="stylesheet" href="css/home.css">
