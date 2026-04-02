@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lockoutTime = 900; // 15 minutes
     if (!isset($_SESSION['admin_login_attempts'])) $_SESSION['admin_login_attempts'] = [];
     // Remove attempts older than lockout window
-    $_SESSION['admin_login_attempts'] = array_filter($_SESSION['admin_login_attempts'], fn($t) => $t > time() - $lockoutTime);
+    $_SESSION['admin_login_attempts'] = array_filter($_SESSION['admin_login_attempts'], function($t) use ($lockoutTime) { return $t > time() - $lockoutTime; });
     
     if (count($_SESSION['admin_login_attempts']) >= $maxAttempts) {
         $waitMinutes = ceil($lockoutTime / 60);

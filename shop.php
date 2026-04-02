@@ -38,21 +38,23 @@ $products = $stmt->fetchAll();
 
 <style>
     .new-drop-banner {
-        background-color: #000;
-        color: white;
+        background: linear-gradient(180deg, #0f0f0f 0%, #000000 100%);
+        color: #fff;
         text-align: center;
-        padding: 80px 20px;
-        margin-bottom: 50px;
-        background-image: url('https://images.unsplash.com/photo-1523398002811-6c9baa02d769?q=80&w=2070&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
+        padding: 120px 20px 100px;
+        margin-bottom: -40px; /* Setup for filter bar overlap if needed */
         position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .new-drop-banner::after {
+    .new-drop-banner::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.6);
+        inset: 0;
+        /* Subtle red luxury glow for 'Fresh Drop' feeling */
+        background: radial-gradient(circle at top, rgba(255, 30, 30, 0.15) 0%, transparent 60%),
+                    radial-gradient(circle at bottom, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+        z-index: 1;
     }
     .banner-content {
         position: relative;
@@ -60,28 +62,34 @@ $products = $stmt->fetchAll();
     }
     .banner-badge {
         display: inline-block;
-        background: #ff4444;
-        color: white;
-        padding: 5px 15px;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        background: #000;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        padding: 6px 20px;
         font-size: 0.8rem;
-        margin-bottom: 20px;
+        letter-spacing: 2.5px;
+        margin-bottom: 25px;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(255,0,0,0.1);
     }
     .banner-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 4rem;
-        font-weight: 800;
+        font-size: clamp(3rem, 6vw, 4.5rem);
+        font-weight: 900;
         text-transform: uppercase;
-        margin-bottom: 10px;
-        line-height: 1;
+        margin-bottom: 15px;
+        line-height: 0.95;
+        letter-spacing: -1.5px;
     }
     .banner-subtitle {
         font-family: 'Kanit', sans-serif;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         font-weight: 300;
-        opacity: 0.9;
+        color: #888;
+        max-width: 600px;
+        margin: 0 auto;
     }
     
     .badge-new {
@@ -97,68 +105,6 @@ $products = $stmt->fetchAll();
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    
-    /* Filter Bar */
-    .filter-bar {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        margin-bottom: 50px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 20px;
-    }
-    .filter-link {
-        color: #888;
-        font-family: 'Outfit', sans-serif;
-        text-transform: uppercase;
-        font-size: 0.9rem;
-        letter-spacing: 1px;
-        position: relative;
-        transition: 0.3s;
-    }
-    .filter-link:hover, .filter-link.active {
-        color: #1a1a1a;
-        font-weight: 600;
-    }
-    .filter-link.active::after {
-        content: '';
-        position: absolute;
-        bottom: -21px; /* Aligns with border-bottom */
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: #1a1a1a;
-    }
-
-    /* Product Card Hover */
-    .product-card {
-        position: relative;
-    }
-    .quick-add-btn {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: #1a1a1a;
-        color: white;
-        text-align: center;
-        padding: 12px;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
-        transform: translateY(100%);
-        opacity: 0;
-        transition: all 0.3s ease;
-    }
-    .product-image-wrapper {
-        overflow: hidden; /* Ensure button stays hidden */
-        position: relative;
-    }
-    .product-card:hover .quick-add-btn {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    
     @media (max-width: 768px) {
         .banner-title { font-size: 2.5rem; }
     }
@@ -173,21 +119,21 @@ $products = $stmt->fetchAll();
         </div>
     </div>
 <?php else: ?>
-    <div class="page-header" style="text-align: center; padding: 60px 0;">
+    <div class="premium-shop-header">
         <div class="container">
-            <h1 class="page-title" style="font-family: 'Outfit', sans-serif; font-size: 3rem; font-weight: 700; margin-bottom: 10px;">
+            <h1 class="page-title">
                 <?= $category ? htmlspecialchars($category) : __('shop_all_products_title') ?>
             </h1>
-            <p style="color: #666; font-family: 'Kanit', sans-serif; font-weight: 300;"><?= __('shop_subtitle') ?></p>
+            <p><?= __('shop_subtitle') ?></p>
         </div>
     </div>
     
     <div class="container">
-        <div class="filter-bar">
+        <div class="filter-bar premium-filters">
             <a href="shop.php" class="filter-link <?= !$category ? 'active' : '' ?>"><?= __('shop_all_filter') ?></a>
             <?php foreach ($categories as $dbValue => $displayName): ?>
                 <a href="shop.php?cat=<?= urlencode($dbValue) ?>" class="filter-link <?= $category === $dbValue ? 'active' : '' ?>">
-                    <?= htmlspecialchars($dbValue) /* Use English Key for cleaner URL/Display or displayName if preferred */ ?>
+                    <?= htmlspecialchars($dbValue) ?>
                 </a>
             <?php endforeach; ?>
         </div>
@@ -211,11 +157,9 @@ $products = $stmt->fetchAll();
                         <div class="quick-add-btn"><?= __('view_details') ?></div>
                     </div>
                     <div class="product-info">
-                        <div>
-                            <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
-                            <span class="product-cat"><?= htmlspecialchars($product['category']) ?></span>
-                        </div>
-                        <span class="product-price"><?= __('from_price') ?><?= number_format($product['base_price'], 0) ?></span>
+                        <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
+                        <span class="product-cat"><?= htmlspecialchars($product['category']) ?></span>
+                        <span class="product-price">฿<?= number_format($product['base_price'], 0) ?></span>
                     </div>
                 </a>
             </div>

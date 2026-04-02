@@ -52,7 +52,7 @@ include 'includes/header.php';
 
 <div class="container" style="padding: 100px 0; min-height: 80vh; display: flex; align-items: center; justify-content: center;">
     <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 500px;">
-        <h2 style="text-align: center; margin-bottom: 10px; font-family: 'Outfit', sans-serif; font-size: 2rem;"><?= __('register_title') ?></h2>
+        <h2 style="text-align: center; margin-bottom: 10px; font-family: 'Outfit', sans-serif; font-size: 2rem; color: #000;"><?= __('register_title') ?></h2>
         <p style="text-align: center; color: #666; margin-bottom: 30px;"><?= __('register_subtitle') ?></p>
 
         <?php if ($error): ?>
@@ -73,28 +73,28 @@ include 'includes/header.php';
                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('full_name') ?> <span style="color:red">*</span></label>
-                    <input type="text" name="name" required value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('full_name') ?> <span style="color:red">*</span></label>
+                    <input type="text" name="name" required value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" style="background: #fff; color: #000; width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('username') ?> <span style="color:red">*</span></label>
-                    <input type="text" name="username" required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('username') ?> <span style="color:red">*</span></label>
+                    <input type="text" name="username" required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" style="background: #fff; color: #000; width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('email_addr') ?> <span style="color:red">*</span></label>
-                    <input type="email" name="email" required value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('email_addr') ?> <span style="color:red">*</span></label>
+                    <input type="email" name="email" required value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" style="background: #fff; color: #000; width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('password') ?> <span style="color:red">*</span></label>
-                    <input type="password" name="password" required placeholder="<?= __('password_min') ?>" style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('password') ?> <span style="color:red">*</span></label>
+                    <input type="password" name="password" required placeholder="<?= __('password_min') ?>" style="background: #fff; color: #000; width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 30px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('confirm_password') ?> <span style="color:red">*</span></label>
-                    <input type="password" name="confirm_password" required placeholder="<?= __('retype_password') ?>" style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('confirm_password') ?> <span style="color:red">*</span></label>
+                    <input type="password" name="confirm_password" required placeholder="<?= __('retype_password') ?>" style="background: #fff; color: #000; width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 
                 <button type="submit" style="width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#000'">

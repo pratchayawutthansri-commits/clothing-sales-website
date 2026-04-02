@@ -2,14 +2,14 @@
 require_once 'includes/init.php';
 require_once 'includes/header.php';
 
-$heroImg  = "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=2000&auto=format&fit=crop";
-$storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=2000&auto=format&fit=crop";
+$heroImg  = "images/about_hero_premium.png"; // Masculine street style hero (Exclusive to About page)
+$storyImg = "images/story_premium.png"; // Dark moody masculine story image
 ?>
 
 <!-- About Page — Premium Streetwear Editorial -->
 <style>
 
-    .about-page { background: #faf9f7; }
+    .about-page { background: #050505; color: #fff; }
 
     /* ── HERO ── */
     .ab-hero {
@@ -24,7 +24,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         flex-direction: column;
         justify-content: center;
         padding: 120px 72px 80px;
-        background: #faf9f7;
+        background: #020202;
     }
     .ab-eyebrow {
         font-family: 'Outfit', monospace;
@@ -43,7 +43,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         font-style: normal !important;
         line-height: 0.95 !important;
         letter-spacing: -0.04em !important;
-        color: #0a0a0a !important;
+        color: #ffffff !important;
         text-transform: uppercase !important;
         margin-bottom: 36px;
         opacity: 0;
@@ -52,7 +52,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
     .ab-hero-sub {
         font-size: 1rem;
         font-weight: 300;
-        color: #666;
+        color: #999;
         line-height: 1.85;
         max-width: 400px;
         margin-bottom: 48px;
@@ -69,18 +69,18 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         font-weight: 600;
         letter-spacing: 0.15em;
         text-transform: uppercase;
-        color: #0a0a0a;
+        color: #fff;
         text-decoration: none;
         padding: 16px 36px;
-        border: 2px solid #0a0a0a;
+        border: 2px solid #fff;
         border-radius: 0;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 0;
         animation: abSlideUp 0.8s ease forwards 0.65s;
     }
     .ab-hero-cta:hover {
-        background: #0a0a0a;
-        color: #fff;
+        background: #fff;
+        color: #000;
     }
     .ab-hero-cta svg {
         transition: transform 0.3s;
@@ -106,24 +106,24 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
     .ab-stats {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        border-top: 1px solid #e8e4dd;
-        border-bottom: 1px solid #e8e4dd;
-        background: #fff;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+        background: #000;
     }
     .ab-stat {
         padding: 48px 40px;
         text-align: center;
-        border-right: 1px solid #e8e4dd;
+        border-right: 1px solid #1a1a1a;
         transition: background 0.3s ease;
     }
     .ab-stat:last-child { border-right: none; }
-    .ab-stat:hover { background: #faf9f7; }
+    .ab-stat:hover { background: #050505; }
     .ab-stat-num {
         font-family: 'Kanit', sans-serif;
         font-size: 2.8rem;
         font-weight: 300;
         font-style: italic;
-        color: #0a0a0a;
+        color: #fff;
         line-height: 1;
         margin-bottom: 8px;
     }
@@ -133,7 +133,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         font-weight: 500;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: #999;
+        color: #666;
     }
 
     /* ── STORY ── */
@@ -143,7 +143,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         grid-template-columns: 1fr 1fr;
         gap: 80px;
         align-items: center;
-        background: #faf9f7;
+        background: #020202;
     }
     .ab-label {
         font-family: 'Outfit', monospace;
@@ -170,13 +170,13 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         line-height: 1.15 !important;
         letter-spacing: -0.01em !important;
         text-transform: none !important;
-        color: #0a0a0a !important;
+        color: #fff !important;
         margin-bottom: 32px;
     }
     .ab-story p {
         font-size: 0.95rem;
         font-weight: 300;
-        color: #555;
+        color: #999;
         line-height: 1.95;
         margin-bottom: 18px;
     }
@@ -204,7 +204,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
     /* ── VALUES ── */
     .ab-values {
         padding: 120px 72px;
-        background: #0a0a0a;
+        background: #000;
         color: #fff;
     }
     .ab-values-top {
@@ -273,7 +273,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
     /* ── MISSION / CTA ── */
     .ab-mission {
         padding: 140px 72px;
-        background: #faf9f7;
+        background: #020202;
         text-align: center;
         position: relative;
         overflow: hidden;
@@ -298,7 +298,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         font-style: italic;
         line-height: 1.25;
         letter-spacing: -0.01em;
-        color: #0a0a0a;
+        color: #fff;
         max-width: 850px;
         margin: 0 auto 56px;
         position: relative;
@@ -313,9 +313,9 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         font-weight: 600;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: #fff;
+        color: #000;
         text-decoration: none;
-        background: #0a0a0a;
+        background: #fff;
         padding: 18px 48px;
         border-radius: 0;
         transition: all 0.4s ease;
@@ -323,9 +323,9 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         z-index: 1;
     }
     .ab-cta-link:hover {
-        background: #333;
+        background: #ccc;
         transform: translateY(-2px);
-        box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+        box-shadow: 0 12px 32px rgba(255,255,255,0.1);
     }
 
     /* ── SCROLL REVEAL ── */
@@ -370,7 +370,7 @@ $storyImg = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=20
         }
         .ab-stat:nth-child(2) { border-right: none; }
         .ab-stat:nth-child(3),
-        .ab-stat:nth-child(4) { border-top: 1px solid #e8e4dd; }
+        .ab-stat:nth-child(4) { border-top: 1px solid #1a1a1a; }
         .ab-stat-num { font-size: 2.2rem; }
         .ab-story {
             grid-template-columns: 1fr;

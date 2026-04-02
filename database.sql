@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS chat_messages (
 CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
-    product_id INT NOT NULL,
+    product_id INT DEFAULT NULL,
     variant_id INT DEFAULT NULL,
     product_name VARCHAR(255) NOT NULL, -- Snapshot of name at time of purchase
     size VARCHAR(10), -- Snapshot of size
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS order_items (
     quantity INT NOT NULL,
     subtotal DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products (id)
+    FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE SET NULL
 );
 
 -- Notifications Table (Global Promos & Messages)

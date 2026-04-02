@@ -92,6 +92,7 @@ include 'includes/header.php';
                             <label class="size-option">
                                 <input type="radio" name="variant_id" value="<?= $variant['id'] ?>" 
                                        data-price="<?= $variant['price'] ?>" 
+                                       data-stock="<?= $variant['stock'] ?>"
                                        <?= $index === 0 ? 'checked' : '' ?> required>
                                 <span><?= htmlspecialchars($variant['size']) ?></span>
                             </label>
@@ -103,9 +104,12 @@ include 'includes/header.php';
                     <input type="hidden" name="variant_id" value="0">
                     <?php endif; ?>
                     
+                    
                     <div class="form-group">
                          <label><?= __('prod_qty') ?></label>
-                         <input type="number" name="quantity" value="1" min="1" max="100" style="padding: 10px; width: 60px; text-align: center; border: 1px solid #ddd;">
+                         <?php $default_stock = count($variants) > 0 ? $variants[0]['stock'] : 100; ?>
+                         <input type="number" name="quantity" id="qty-input" value="1" min="1" max="<?= $default_stock ?>" style="padding: 10px; width: 60px; text-align: center; border: 1px solid #ddd;">
+                         <span id="stock-warning" style="color: #ff2a2a; margin-left: 10px; font-size: 0.85rem; display: none;"></span>
                     </div>
 
                     <button type="submit" class="btn add-to-cart-btn"><?= mb_strtoupper(__('prod_add_cart')) ?></button>
@@ -116,17 +120,7 @@ include 'includes/header.php';
 </div>
 
 <?php if ($product): ?>
-<script>
-    const priceDisplay = document.getElementById('display-price');
-    const radios = document.querySelectorAll('input[name="variant_id"]');
-
-    radios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            const price = this.getAttribute('data-price');
-            priceDisplay.textContent = '฿' + new Intl.NumberFormat().format(price);
-        });
-    });
-</script>
+<script src="js/product.js" defer></script>
 <?php endif; ?>
 
 <?php include 'includes/footer.php'; ?>

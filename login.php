@@ -57,7 +57,7 @@ include 'includes/header.php';
 
 <div class="container" style="padding: 100px 0; min-height: 80vh; display: flex; align-items: center; justify-content: center;">
     <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 450px;">
-        <h2 style="text-align: center; margin-bottom: 10px; font-family: 'Outfit', sans-serif; font-size: 2rem;"><?= __('login_title') ?></h2>
+        <h2 style="text-align: center; margin-bottom: 10px; font-family: 'Outfit', sans-serif; font-size: 2rem; color: #000;"><?= __('login_title') ?></h2>
         <p style="text-align: center; color: #666; margin-bottom: 30px;"><?= __('login_subtitle') ?></p>
 
         <?php if ($error): ?>
@@ -70,27 +70,27 @@ include 'includes/header.php';
             <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
 
             <div class="form-group" style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('username_email') ?> <span style="color:red">*</span></label>
-                <input type="text" name="username" required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('username_email') ?> <span style="color:red">*</span></label>
+                <input type="text" name="username" required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" style="background: #fff; color: #000; width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
             </div>
 
             <div class="form-group" style="margin-bottom: 30px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('password') ?> <span style="color:red">*</span></label>
-                <input type="password" name="password" required style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('password') ?> <span style="color:red">*</span></label>
+                <input type="password" name="password" required style="background: #fff; color: #000; width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
             </div>
 
-            <button type="submit" style="width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#000'">
+            <button type="submit" style="width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 8px; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#000'">
                 <?= __('btn_login') ?>
             </button>
             
             <div style="text-align: center; margin-top: 15px;">
-                <a href="forgot_password.php" style="color: #666; font-size: 0.9rem; text-decoration: underline;"><?= __('forgot_password_link') ?? 'Forgot Password?' ?></a>
+                <a href="forgot_password.php" style="color: #666; font-size: 0.9rem; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#666'"><?= __('forgot_password_link') ?? 'Forgot Password?' ?></a>
             </div>
         </form>
 
         <p style="text-align: center; margin-top: 25px; color: #666; font-size: 0.95rem;">
             <?= __('no_account') ?> 
-            <a href="register.php" style="color: #000; font-weight: 600; text-decoration: none;"><?= __('register_here') ?></a>
+            <a href="register.php" style="color: #000; font-weight: 600; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#000'"><?= __('register_here') ?></a>
         </p>
     </div>
 </div>

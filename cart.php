@@ -27,7 +27,7 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
             $placeholders = implode(',', array_fill(0, count($variantIds), '?'));
             
             $stmt = $pdo->prepare("
-                SELECT p.*, v.id AS variant_id, v.size, v.price AS variant_price
+                SELECT p.*, v.id AS variant_id, v.size, v.price AS variant_price, v.stock
                 FROM products p
                 JOIN product_variants v ON v.product_id = p.id
                 WHERE v.id IN ($placeholders)
@@ -72,6 +72,13 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     <div class="container">
         <h1><?= __('cart_title') ?></h1>
         
+        <?php if (isset($_SESSION['cart_error'])): ?>
+            <div style="background-color: rgba(255, 42, 42, 0.1); border-left: 4px solid #ff2a2a; color: #ff2a2a; padding: 15px; margin-bottom: 20px; font-weight: 500;">
+                <?= htmlspecialchars($_SESSION['cart_error']) ?>
+            </div>
+            <?php unset($_SESSION['cart_error']); ?>
+        <?php endif; ?>
+        
         <?php if (empty($cartItems)): ?>
             <p style="margin-top: 20px;"><?= __('cart_empty') ?> <a href="shop.php" style="text-decoration:underline;"><?= __('cart_continue') ?></a></p>
         <?php else: ?>
@@ -105,7 +112,7 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
                                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                 <input type="hidden" name="action" value="update">
                                 <input type="hidden" name="key" value="<?= htmlspecialchars($item['cart_key']) ?>">
-                                <input type="number" name="quantity" value="<?= $item['qty'] ?>" class="qty-input" min="1" max="100" onchange="this.form.submit()">
+                                <input type="number" name="quantity" value="<?= $item['qty'] ?>" class="qty-input" min="1" max="<?= isset($item['stock']) ? $item['stock'] : 100 ?>" onchange="this.form.submit()">
                             </form>
                         </td>
                         <td>฿<?= number_format($item['subtotal'], 0) ?></td>

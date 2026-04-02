@@ -31,8 +31,8 @@ foreach ($_SESSION['cart'] as $key => $quantity) {
 
 if (!empty($cartParsed)) {
     // Separate items with variants and without variants
-    $withVariants = array_filter($cartParsed, fn($c) => $c['vid'] > 0);
-    $withoutVariants = array_filter($cartParsed, fn($c) => $c['vid'] === 0);
+    $withVariants = array_filter($cartParsed, function($c) { return $c['vid'] > 0; });
+    $withoutVariants = array_filter($cartParsed, function($c) { return $c['vid'] === 0; });
 
     // Fetch items WITH variants
     if (!empty($withVariants)) {

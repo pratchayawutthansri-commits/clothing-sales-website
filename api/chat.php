@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_SESSION['chat_rate'])) $_SESSION['chat_rate'] = [];
     $_SESSION['chat_rate'][] = time();
     // Keep only messages from last 60 seconds
-    $_SESSION['chat_rate'] = array_filter($_SESSION['chat_rate'], fn($t) => $t > time() - 60);
+    $_SESSION['chat_rate'] = array_filter($_SESSION['chat_rate'], function($t) { return $t > time() - 60; });
     if (count($_SESSION['chat_rate']) > 20) {
         echo json_encode(['status' => 'error', 'message' => 'Rate limit exceeded. Please wait.']);
         exit;
