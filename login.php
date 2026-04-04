@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Redirect user
                 if ($user['role'] === 'admin') {
+                    $_SESSION['is_admin'] = true;
+                    $_SESSION['admin_id'] = $user['id'];
                     redirect('admin/index.php');
                 } else {
                     // Check if they came from checkout

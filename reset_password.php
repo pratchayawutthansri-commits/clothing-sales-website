@@ -74,7 +74,7 @@ include 'includes/header.php';
         <h2 style="text-align: center; margin-bottom: 20px; font-family: 'Outfit', sans-serif; font-size: 2rem;"><?= __('reset_pass_title') ?? 'Reset Password' ?></h2>
         
         <?php if ($error): ?>
-            <div style="background: #fee2e2; color: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.95rem;">
+            <div style="background: #fee2e2; color: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.95rem; color: #000;">
                 <?= htmlspecialchars($error) ?>
             </div>
             <?php if (!$valid_token && empty($success)): ?>
@@ -85,7 +85,7 @@ include 'includes/header.php';
         <?php endif; ?>
 
         <?php if ($success): ?>
-            <div style="background: #dcfce7; color: #22c55e; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.95rem;">
+            <div style="background: #dcfce7; color: #22c55e; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.95rem; color: #000;">
                 <?= htmlspecialchars($success) ?>
             </div>
             <div style="text-align: center; margin-top: 20px;">
@@ -98,12 +98,12 @@ include 'includes/header.php';
                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('new_password') ?? 'New Password' ?> <span style="color:red">*</span></label>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('new_password') ?? 'New Password' ?> <span style="color:red">*</span></label>
                     <input type="password" name="password" required placeholder="<?= __('password_min') ?? 'At least 6 characters' ?>" style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 25px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('confirm_password') ?? 'Confirm Password' ?> <span style="color:red">*</span></label>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('confirm_password') ?? 'Confirm Password' ?> <span style="color:red">*</span></label>
                     <input type="password" name="confirm_password" required style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 

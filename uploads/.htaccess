@@ -1,0 +1,12 @@
+Options -Indexes
+
+<FilesMatch "\.(php|php4|php5|php7|php8|phtml|cgi|sh|pl|py|jsp|asp|aspx|sh|cgi|bash)$">
+    Order Deny,Allow
+    Deny from All
+</FilesMatch>
+
+# Only allow specific image types
+<FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+    Order Allow,Deny
+    Allow from All
+</FilesMatch>

@@ -14,67 +14,164 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
 <head>
     <meta charset="UTF-8">
     <title>Live Chat - Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
     <style>
-        /* admin.css handles sidebar+layout */
+        /* Modern Chat Layout */
+        body { background: #f3f4f6; font-family: 'Kanit', sans-serif; margin: 0; }
+        
+        .chat-container { display: flex; height: 100vh; width: 100%; background: #f3f4f6; overflow: hidden; }
+        
+        /* Sidebar Inbox */
+        .chat-sidebar {
+            width: 320px; background: white; border-right: 1px solid #e5e7eb;
+            display: flex; flex-direction: column; z-index: 10;
+        }
+        .chat-sidebar-header {
+            padding: 24px; border-bottom: 1px solid #e5e7eb;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .chat-sidebar-header h2 { font-size: 1.25rem; font-family: 'Outfit', sans-serif; margin: 0; font-weight: 600; color: #111827; }
+        .btn-icon { background: none; border: none; cursor: pointer; color: #6b7280; padding: 5px; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
+        .btn-icon:hover { background: #f3f4f6; color: #111827; }
+
+        /* Session Links */
         .session-link {
-            display: block; 
-            padding: 15px 20px; 
-            border-bottom: 1px solid #f9f9f9; 
-            text-decoration: none; 
-            color: #333;
+            display: flex; flex-direction: column; padding: 16px 24px;
+            border-bottom: 1px solid #f9fafb; text-decoration: none; color: #374151;
+            transition: all 0.2s; border-left: 3px solid transparent;
         }
+        .session-link:hover { background: #f9fafb; }
         .session-link.active {
-            background: #f0f7ff;
-            border-left: 4px solid #007bff;
+            background: #f9fafb; border-left-color: #000;
         }
-        .session-link:hover {
-            background: #f9f9f9;
+        .session-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .session-name { font-weight: 600; font-family: 'Outfit', sans-serif; color: #111827; }
+        .session-time { font-size: 0.75rem; color: #9ca3af; }
+        .session-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #6b7280; }
+        .msg-badge { background: #e5e7eb; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; color: #374151; }
+        .session-link.active .msg-badge { background: #000; color: white; }
+
+        /* Chat Main Area */
+        .chat-main { flex: 1; display: flex; flex-direction: column; background: #f3f4f6; position: relative; }
+        .chat-header {
+            background: white; padding: 20px 30px; border-bottom: 1px solid #e5e7eb;
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            z-index: 5;
         }
+        .avatar {
+            width: 44px; height: 44px; border-radius: 50%; background: #f3f4f6;
+            display: flex; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; font-weight: 700; color: #6b7280; font-size: 1.1rem;
+        }
+        .chat-header-info h3 { margin: 0 0 2px 0; font-size: 1.1rem; font-family: 'Outfit', sans-serif; color: #111827; }
+        .status-dot { display: inline-block; width: 8px; height: 8px; background: #10b981; border-radius: 50%; margin-right: 5px; }
+        .status-text { font-size: 0.8rem; color: #6b7280; display: flex; align-items: center; }
+
+        /* Messages */
+        .chat-messages {
+            flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px;
+        }
+        .msg-bubble {
+            padding: 14px 20px; border-radius: 18px; max-width: 65%; line-height: 1.5; word-break: break-word;
+            font-size: 0.95rem; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .msg-admin {
+            background: #000; color: white; align-self: flex-end; border-bottom-right-radius: 4px;
+        }
+        .msg-guest {
+            background: white; color: #111827; align-self: flex-start; border-bottom-left-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Input Form */
+        .chat-input-area {
+            background: white; padding: 20px 30px; border-top: 1px solid #e5e7eb; z-index: 5;
+        }
+        .chat-form {
+            display: flex; gap: 12px; align-items: center; 
+            background: #f9fafb; border: 1px solid #e5e7eb; padding: 6px 6px 6px 20px; border-radius: 40px;
+            transition: all 0.2s;
+        }
+        .chat-form:focus-within { background: white; border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+        .chat-input {
+            flex: 1; border: none; background: transparent; padding: 10px 0; font-family: inherit; font-size: 1rem; outline: none; color: #111827;
+        }
+        .chat-input::placeholder { color: #9ca3af; }
+        .btn-send {
+            background: #000; color: white; border: none; width: 44px; height: 44px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+        }
+        .btn-send:hover { background: #374151; transform: scale(1.05); }
+
+        .empty-state {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af;
+        }
+        .empty-state svg { width: 64px; height: 64px; margin-bottom: 15px; color: #d1d5db; }
+        .empty-state p { font-size: 1.1rem; font-family: 'Outfit', sans-serif; margin: 0; }
+        
+        /* Scrollbar cleanup */
+        #sessionList::-webkit-scrollbar, #adminChatMessages::-webkit-scrollbar { width: 6px; }
+        #sessionList::-webkit-scrollbar-thumb, #adminChatMessages::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div style="display: flex; height: 100vh; width: 100%;">
+<div class="chat-container">
     <!-- Main Sidebar -->
     <?php include 'includes/sidebar.php'; ?>
 
     <!-- Chat Inbox Sidebar -->
-    <div style="width: 300px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column;">
-        <div style="padding: 20px; border-bottom: 1px solid #eee; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
-            <span id="inboxCount">Inbox (<?= count($sessions) ?>)</span>
-            <button onclick="fetchSidebarSessions()" style="background:none; border:none; cursor:pointer; color:#007bff;" title="Refresh">↻</button>
+    <div class="chat-sidebar">
+        <div class="chat-sidebar-header">
+            <h2 id="inboxCount">Inbox (<?= count($sessions) ?>)</h2>
+            <button onclick="fetchSidebarSessions()" class="btn-icon" title="Refresh">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            </button>
         </div>
         <div id="sessionList" style="flex: 1; overflow-y: auto;">
             <?php foreach ($sessions as $s): ?>
                 <a href="?session=<?= htmlspecialchars($s['session_id'], ENT_QUOTES, 'UTF-8') ?>" class="session-link <?= $currentSession === $s['session_id'] ? 'active' : '' ?>">
-                    <div style="font-weight: 600; font-size: 0.9rem;">Guest #<?= htmlspecialchars(substr($s['session_id'], 0, 8)) ?></div>
-                    <div style="font-size: 0.8rem; color: #888; margin-top: 5px;"><?= date('H:i', strtotime($s['last_msg'])) ?> · <?= (int)$s['msg_count'] ?> msgs</div>
+                    <div class="session-info">
+                        <span class="session-name">Guest #<?= htmlspecialchars(substr($s['session_id'], 0, 6)) ?></span>
+                        <span class="session-time"><?= date('H:i', strtotime($s['last_msg'])) ?></span>
+                    </div>
+                    <div class="session-meta">
+                        <span>Customer Support</span>
+                        <span class="msg-badge"><?= (int)$s['msg_count'] ?></span>
+                    </div>
                 </a>
             <?php endforeach; ?>
         </div>
     </div>
 
     <!-- Chat Area -->
-    <div style="flex: 1; display: flex; flex-direction: column; background: #f4f6f8;">
+    <div class="chat-main">
         <?php if ($currentSession): ?>
-            <div style="padding: 15px 30px; background: white; border-bottom: 1px solid #ddd; font-weight: bold;">
-                Chat with #<?= htmlspecialchars($currentSession) ?>
+            <div class="chat-header">
+                <div class="avatar">G</div>
+                <div class="chat-header-info">
+                    <h3>Guest #<?= htmlspecialchars(substr($currentSession, 0, 6)) ?></h3>
+                    <div class="status-text"><span class="status-dot"></span> Online</div>
+                </div>
             </div>
             
-            <div id="adminChatMessages" style="flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+            <div id="adminChatMessages" class="chat-messages">
                 <!-- Messages loaded via JS -->
             </div>
 
-            <div style="padding: 20px; background: white; border-top: 1px solid #ddd;">
-                <form id="adminChatForm" style="display: flex; gap: 10px;">
-                    <input type="text" id="adminMsgInput" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 4px;" placeholder="Type a reply...">
-                    <button type="submit" class="btn">Send</button>
+            <div class="chat-input-area">
+                <form id="adminChatForm" class="chat-form">
+                    <input type="text" id="adminMsgInput" class="chat-input" placeholder="พิมพ์ข้อความตอบกลับ..." autocomplete="off">
+                    <button type="submit" class="btn-send" title="Send message">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </button>
                 </form>
             </div>
         <?php else: ?>
-            <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #999;">Select a conversation to start chatting</div>
+            <div class="empty-state">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <p>เลือกแชทเพื่อเริ่มต้นสนทนา</p>
+            </div>
         <?php endif; ?>
     </div>
 </div>
@@ -97,7 +194,7 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
                 
                 data.sessions.forEach(s => {
                     const isActive = currentSession === s.session_id ? 'active' : '';
-                    const shortId = s.session_id.substring(0, 8);
+                    const shortId = s.session_id.substring(0, 6);
                     
                     // Format time
                     const d = new Date(s.last_msg.replace(' ', 'T'));
@@ -107,8 +204,14 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
                     link.href = `?session=${s.session_id}`;
                     link.className = `session-link ${isActive}`;
                     link.innerHTML = `
-                        <div style="font-weight: 600; font-size: 0.9rem;">Guest #${shortId}</div>
-                        <div style="font-size: 0.8rem; color: #888; margin-top: 5px;">${timeStr} · ${s.msg_count} msgs</div>
+                        <div class="session-info">
+                            <span class="session-name">Guest #${shortId}</span>
+                            <span class="session-time">${timeStr}</span>
+                        </div>
+                        <div class="session-meta">
+                            <span>Customer Support</span>
+                            <span class="msg-badge">${s.msg_count}</span>
+                        </div>
                     `;
                     sessionList.appendChild(link);
                 });
@@ -167,24 +270,7 @@ $currentSession = $_GET['session'] ?? ($sessions[0]['session_id'] ?? null);
 
     function appendAdminMessage(text, isAdmin) {
         const div = document.createElement('div');
-        div.style.padding = '10px 15px';
-        div.style.borderRadius = '8px';
-        div.style.maxWidth = '60%';
-        div.style.lineHeight = '1.5';
-        div.style.wordBreak = 'break-word';
-        
-        if (isAdmin == 1) { // Admin sent
-            div.style.background = '#007bff';
-            div.style.color = 'white';
-            div.style.alignSelf = 'flex-end';
-            div.style.borderBottomRightRadius = '0px';
-        } else { // User sent
-            div.style.background = 'white';
-            div.style.border = '1px solid #ddd';
-            div.style.alignSelf = 'flex-start';
-            div.style.borderBottomLeftRadius = '0px';
-        }
-        
+        div.className = isAdmin == 1 ? 'msg-bubble msg-admin' : 'msg-bubble msg-guest';
         div.textContent = text;
         
         const container = document.getElementById('adminChatMessages');

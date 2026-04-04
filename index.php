@@ -4,7 +4,7 @@ include 'includes/header.php';
 
 // Fetch featured products (newest 4 visible products)
 $featured_products = Product::getFeatured(4);
-?> loam
+?>
 
 <!-- Premium Dynamic Styles -->
 <link rel="stylesheet" href="css/home.css">

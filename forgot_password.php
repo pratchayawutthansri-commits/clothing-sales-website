@@ -68,13 +68,13 @@ include 'includes/header.php';
         <p style="text-align: center; color: #666; margin-bottom: 30px;"><?= __('forgot_pass_subtitle') ?? 'Enter your email to receive a reset link.' ?></p>
 
         <?php if ($error): ?>
-            <div style="background: #fee2e2; color: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.95rem;">
+            <div style="background: #fee2e2; color: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.95rem; color: #000;">
                 <?= htmlspecialchars($error) ?>
             </div>
         <?php endif; ?>
 
         <?php if ($success): ?>
-            <div style="background: #dcfce7; color: #22c55e; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.95rem;">
+            <div style="background: #dcfce7; color: #22c55e; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.95rem; color: #000;">
                 <?= htmlspecialchars($success) ?>
             </div>
             <div style="text-align: center; margin-top: 20px;">
@@ -85,7 +85,7 @@ include 'includes/header.php';
                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
 
                 <div class="form-group" style="margin-bottom: 25px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem;"><?= __('email_addr') ?? 'Email Address' ?></label>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #000;"><?= __('email_addr') ?? 'Email Address' ?></label>
                     <input type="email" name="email" required value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" style="width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 
@@ -95,7 +95,7 @@ include 'includes/header.php';
             </form>
 
             <div style="text-align: center; margin-top: 25px;">
-                <a href="login.php" style="color: #666; font-size: 0.95rem; text-decoration: none;">&larr; <?= __('back_to_login') ?? 'Back to Login' ?></a>
+                <a href="login.php" style="color: #666; font-size: 0.95rem; color: #000; text-decoration: none;">&larr; <?= __('back_to_login') ?? 'Back to Login' ?></a>
             </div>
         <?php endif; ?>
     </div>

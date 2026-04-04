@@ -31,23 +31,21 @@ $toShipCount = $stmtToShip->fetchColumn();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders - Xivex Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
     <style>
-        /* Page-specific: Orders */
-        th { text-transform: uppercase; font-size: 0.85rem; }
-        th, td { padding: 18px; }
-        tr:hover { background: #fafafa; }
+        /* Modern SaaS Dashboard Layout */
+        body { background: #f3f4f6; font-family: 'Kanit', sans-serif; }
         
-        .btn-view { padding: 6px 15px; background: #000; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: 0.3s; }
-        .btn-view:hover { background: #444; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 0; color: #111827; }
 
         /* ─── Modern Stat Cards ─── */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 24px;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
         .ostat-card {
             position: relative;
@@ -64,7 +62,7 @@ $toShipCount = $stmtToShip->fetchColumn();
         }
         .ostat-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
         .ostat-card::before {
             content: '';
@@ -92,10 +90,10 @@ $toShipCount = $stmtToShip->fetchColumn();
         }
 
         .ostat-card.card-pending {
-            background: linear-gradient(135deg, #f97316, #fb923c, #fdba74);
+            background: linear-gradient(135deg, #111827, #374151, #4b5563);
         }
         .ostat-card.card-toship {
-            background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
+            background: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa);
         }
 
         .ostat-info {
@@ -109,6 +107,7 @@ $toShipCount = $stmtToShip->fetchColumn();
             text-transform: uppercase;
             letter-spacing: 1.5px;
             opacity: 0.85;
+            font-family: 'Kanit', sans-serif;
         }
         .ostat-info .ostat-number {
             font-size: 3rem;
@@ -116,7 +115,6 @@ $toShipCount = $stmtToShip->fetchColumn();
             line-height: 1.1;
             margin-top: 6px;
             font-family: 'Outfit', sans-serif;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .ostat-info .ostat-sub {
             font-size: 0.78rem;
@@ -129,7 +127,7 @@ $toShipCount = $stmtToShip->fetchColumn();
             z-index: 1;
             width: 64px;
             height: 64px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 18px;
@@ -139,14 +137,63 @@ $toShipCount = $stmtToShip->fetchColumn();
             transition: all 0.4s;
         }
         .ostat-card:hover .ostat-icon {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.2);
             transform: rotate(5deg) scale(1.1);
         }
-        .ostat-icon svg {
-            width: 28px;
-            height: 28px;
-            color: #fff;
+        .ostat-icon svg { width: 28px; height: 28px; color: #fff; }
+
+        /* Filter Tabs */
+        .filter-tabs { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+        .filter-tab { padding: 8px 16px; border-radius: 20px; font-weight: 500; font-size: 0.9rem; text-decoration: none; color: #6b7280; background: #fff; border: 1px solid #e5e7eb; transition: 0.2s; }
+        .filter-tab:hover { background: #f9fafb; color: #111827; }
+        .filter-tab.active-all, .filter-tab.active-pending, .filter-tab.active-paid, .filter-tab.active-shipped, .filter-tab.active-completed, .filter-tab.active-cancelled {
+            border-color: transparent; color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
+        .filter-tab.active-all { background: #111827; }
+        .filter-tab.active-pending { background: #ea580c; }
+        .filter-tab.active-paid { background: #2563eb; }
+        .filter-tab.active-shipped { background: #0ea5e9; }
+        .filter-tab.active-completed { background: #16a34a; }
+        .filter-tab.active-cancelled { background: #ef4444; }
+
+        /* Modern Table */
+        .modern-table-card { 
+            background: white; border-radius: 12px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03); 
+            overflow: hidden; border: 1px solid #e5e7eb; 
+        }
+        .modern-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .modern-table th { 
+            background: #f9fafb; font-weight: 600; color: #4b5563; font-size: 0.85rem; 
+            text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 24px; 
+            text-align: left; border-bottom: 1px solid #e5e7eb; 
+        }
+        .modern-table td { 
+            padding: 16px 24px; vertical-align: middle; border-bottom: 1px solid #f3f4f6; 
+            transition: background 0.2s; 
+        }
+        .modern-table tbody tr:hover td { background: #f9fafb; }
+        .modern-table tbody tr:last-child td { border-bottom: none; }
+
+        .order-id { color: #111827; font-family: 'Outfit', monospace; font-weight: 600; font-size: 0.95rem; }
+        .primary-text { font-weight: 600; color: #111827; margin-bottom: 2px; }
+        .secondary-text { font-size: 0.85rem; color: #6b7280; font-family: 'Outfit', sans-serif;}
+        
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .status-pending { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+        .status-paid { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .status-shipped { background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; }
+        .status-completed { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .status-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+        .action-flex { display: flex; gap: 8px; justify-content: flex-end; }
+        .btn-action { padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; border: none; }
+        
+        .btn-view { background: #111827; color: white; }
+        .btn-view:hover { background: #374151; }
+        
+        .btn-print { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
+        .btn-print:hover { background: #e5e7eb; color: #111827; }
     </style>
 </head>
 <body>
@@ -154,7 +201,7 @@ $toShipCount = $stmtToShip->fetchColumn();
 <?php include 'includes/sidebar.php'; ?>
 
 <div class="content">
-    <div class="header">
+    <div class="page-header">
         <h1><?= __('ao_title') ?></h1>
     </div>
     
@@ -181,59 +228,81 @@ $toShipCount = $stmtToShip->fetchColumn();
         </a>
     </div>
     
-    <div style="margin-bottom: 20px;">
-        <a href="orders.php" class="btn" style="background: #666;"><?= __('ao_filter_all') ?></a>
-        <a href="orders.php?status=pending" class="btn" style="background: #fd7e14;"><?= __('ao_filter_pending') ?></a>
-        <a href="orders.php?status=paid" class="btn" style="background: #28a745;"><?= __('ao_filter_paid') ?></a>
-        <a href="orders.php?status=shipped" class="btn" style="background: #007bff;"><?= __('ao_filter_shipped') ?></a>
-        <a href="orders.php?status=completed" class="btn" style="background: #198754;"><?= __('ao_filter_completed') ?></a>
-        <a href="orders.php?status=cancelled" class="btn" style="background: #dc3545;"><?= __('ao_filter_cancelled') ?></a>
+    <div class="filter-tabs">
+        <a href="orders.php" class="filter-tab <?= empty($status) ? 'active-all' : '' ?>"><?= __('ao_filter_all') ?></a>
+        <a href="orders.php?status=pending" class="filter-tab <?= $status === 'pending' ? 'active-pending' : '' ?>"><?= __('ao_filter_pending') ?></a>
+        <a href="orders.php?status=paid" class="filter-tab <?= $status === 'paid' ? 'active-paid' : '' ?>"><?= __('ao_filter_paid') ?></a>
+        <a href="orders.php?status=shipped" class="filter-tab <?= $status === 'shipped' ? 'active-shipped' : '' ?>"><?= __('ao_filter_shipped') ?></a>
+        <a href="orders.php?status=completed" class="filter-tab <?= $status === 'completed' ? 'active-completed' : '' ?>"><?= __('ao_filter_completed') ?></a>
+        <a href="orders.php?status=cancelled" class="filter-tab <?= $status === 'cancelled' ? 'active-cancelled' : '' ?>"><?= __('ao_filter_cancelled') ?></a>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th><?= __('ao_th_order_id') ?></th>
-                <th><?= __('ao_th_date') ?></th>
-                <th><?= __('ao_th_customer') ?></th>
-                <th><?= __('ao_th_total') ?></th>
-                <th><?= __('ao_th_payment') ?></th>
-                <th><?= __('ao_th_status') ?></th>
-                <th><?= __('ao_th_action') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (count($orders) > 0): ?>
-                <?php foreach ($orders as $order): ?>
+    <div class="modern-table-card">
+        <table class="modern-table">
+            <thead>
                 <tr>
-                    <td>#<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?></td>
-                    <td><?= date('d/m/Y H:i', strtotime($order['order_date'])) ?></td>
-                    <td>
-                        <b><?= htmlspecialchars($order['customer_name']) ?></b><br>
-                        <span style="font-size:0.8rem; color:#888;"><?= htmlspecialchars($order['phone']) ?></span>
-                    </td>
-                    <td>฿<?= number_format($order['total_price'], 0) ?></td>
-                    <td><?= htmlspecialchars(strtoupper($order['payment_method'])) ?></td>
-                    <td>
-                        <span class="badge status-<?= htmlspecialchars($order['status']) ?>">
-                            <?= ucfirst(htmlspecialchars($order['status'])) ?>
-                        </span>
-                    </td>
-                    <td>
-                        <a href="order_details.php?id=<?= $order['id'] ?>" class="btn-view" style="margin-right: 5px;"><?= __('ao_btn_view') ?></a>
-                        <a href="print_label.php?id=<?= $order['id'] ?>" target="_blank" class="btn-view" style="background: #6c757d;"><?= __('ao_btn_print') ?></a>
-                    </td>
+                    <th style="width: 100px;"><?= __('ao_th_order_id') ?></th>
+                    <th><?= __('ao_th_date') ?></th>
+                    <th><?= __('ao_th_customer') ?></th>
+                    <th><?= __('ao_th_total') ?></th>
+                    <th><?= __('ao_th_payment') ?></th>
+                    <th><?= __('ao_th_status') ?></th>
+                    <th style="text-align: right;"><?= __('ao_th_action') ?></th>
                 </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="7" style="text-align: center; color: #999; padding: 50px;">
-                        <?= __('ao_no_orders') ?>
-                    </td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php if (count($orders) > 0): ?>
+                    <?php foreach ($orders as $order): ?>
+                    <tr>
+                        <td><span class="order-id">#<?= str_pad($order['id'], 5, '0', STR_PAD_LEFT) ?></span></td>
+                        <td>
+                            <div class="primary-text"><?= date('d/m/Y', strtotime($order['order_date'])) ?></div>
+                            <div class="secondary-text"><?= date('H:i', strtotime($order['order_date'])) ?></div>
+                        </td>
+                        <td>
+                            <div class="primary-text"><?= htmlspecialchars($order['customer_name']) ?></div>
+                            <div class="secondary-text"><?= htmlspecialchars($order['phone']) ?></div>
+                        </td>
+                        <td class="primary-text">฿<?= number_format($order['total_price'], 0) ?></td>
+                        <td><div class="secondary-text"><?= htmlspecialchars(strtoupper($order['payment_method'])) ?></div></td>
+                        <td>
+                            <span class="badge status-<?= htmlspecialchars($order['status']) ?>">
+                                <?php
+                                    $statusText = ucfirst(htmlspecialchars($order['status']));
+                                    if ($order['status'] === 'pending') {
+                                        echo '<svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ';
+                                    } elseif ($order['status'] === 'paid') {
+                                        echo '<svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> ';
+                                    } elseif ($order['status'] === 'shipped') {
+                                        echo '<svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg> ';
+                                    }
+                                    echo $statusText;
+                                ?>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-flex">
+                                <a href="print_label.php?id=<?= $order['id'] ?>" target="_blank" class="btn-action btn-print" title="<?= __('ao_btn_print') ?>">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                </a>
+                                <a href="order_details.php?id=<?= $order['id'] ?>" class="btn-action btn-view" title="<?= __('ao_btn_view') ?>">
+                                    รายละเอียด
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #9ca3af; padding: 50px;">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:48px; height:48px; margin-bottom:15px; opacity:0.5;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2v0"></path></svg><br>
+                            <?= __('ao_no_orders') ?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 </body>

@@ -265,9 +265,26 @@ if (isset($_SESSION['user_id'])) {
             font-size: 0.85rem;
             font-family: 'Kanit', sans-serif;
         }
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            margin-left: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+            padding: 5px;
+        }
+        .theme-toggle-btn:hover { color: #fff; }
+        body.light-mode .theme-toggle-btn:hover { color: #000; }
+        body.light-mode .theme-toggle-btn { color: #666; }
     </style>
 </head>
 <body>
+<!-- Theme Initializer: Prevents FOUC (Flash of Unstyled Content) -->
+<script>if(localStorage.getItem('xivex_theme') === 'light') { document.body.classList.add('light-mode'); }</script>
 
 <header>
     <div class="container">
@@ -311,11 +328,14 @@ if (isset($_SESSION['user_id'])) {
                         <a href="change_language.php?lang=th" class="<?= $_SESSION['lang'] === 'th' ? 'active' : '' ?>">TH</a> 
                         <span class="divider">|</span> 
                         <a href="change_language.php?lang=en" class="<?= $_SESSION['lang'] === 'en' ? 'active' : '' ?>">EN</a>
+                        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme" title="Switch Theme"></button>
                     </li>
                 </ul>
         </nav>
     </div>
 </header>
+
+<script src="js/theme.js"></script>
 
 <script>
 // Mobile Menu Toggle
